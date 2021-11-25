@@ -2,7 +2,7 @@
     "compilerOptions": {
         "module": "CommonJS",
         "target": "ES6",
-        "baseUrl": "./Src",
-        "outDir": "./Dist"
+        "baseUrl": ".",
+        "outDir": "../../Dist"
     }
 }

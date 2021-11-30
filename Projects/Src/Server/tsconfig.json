@@ -2,8 +2,10 @@
     "compilerOptions": {
         "module": "CommonJS",
         "target": "ES6",
-        "baseUrl": ".",
+        //"baseUrl": ".",
+        "rootDir": ".",
         "outDir": "../../Dist",
-        "sourceMap": true
+        "sourceMap": true,
+        "allowJs": true
     }
 }

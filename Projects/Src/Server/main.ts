@@ -1,5 +1,9 @@
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
+import iberbar from "./libs/iberbar";
+import { n } from "./test";
+console.log( iberbar.System );
+console.log(n);
 let mainWindow: Electron.BrowserWindow;
 /**
  *

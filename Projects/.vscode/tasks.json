@@ -3,12 +3,23 @@
     "tasks": [
         {
             "type": "typescript",
-            "tsconfig": "Projects/Src/Server/tsconfig.json",
+            "tsconfig": "Src/Server/tsconfig.json",
+            "option": "watch",
             "problemMatcher": [
-                "$tsc"
+                "$tsc-watch"
             ],
             "group": "build",
-            "label": "tsc: 构建 - Projects/Src/Server/tsconfig.json"
+            "label": "tsc: 监视 - Server"
+        },
+        {
+            "type": "typescript",
+            "tsconfig": "Src/Client/tsconfig.json",
+            "option": "watch",
+            "problemMatcher": [
+                "$tsc-watch"
+            ],
+            "group": "build",
+            "label": "tsc: 监视 - Client"
         }
     ]
 

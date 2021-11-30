@@ -1,0 +1,14 @@
+{
+    "Comment": "锤子技能数据配置",
+    "Fields": {
+        "Time": {
+            "Type": "Int",
+            "Comment": "毫秒"
+        },
+        "Buff_Dizzy": {
+            "Type": "Id", // 关联id
+            "DataBase": "Buffs", // Buffs数据库
+            "Comment": "眩晕buff"
+        }
+    }
+}

@@ -3,7 +3,7 @@
         "module": "AMD",
         "target": "ES6",
         "baseUrl": ".",
-        "outDir": "../../Dist/wwwroot",
+        "outDir": "../../WWWRoot",
         "typeRoots": [
             "./libs"
         ]

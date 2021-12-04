@@ -31,14 +31,20 @@ var webpack_conf = {
                 test: /\.scss$/,
                 use: [ 
                     'style-loader', // adds styles to the DOM
-                    'css-modules-ts-definitions-loader', // generates TypeScript type definition files
+                    '@opd/css-modules-typings-loader',
                     {
                       loader: 'css-loader', // converts CSS into CommonJS
                       options: {
-                        modules: true,
-                        camelCase: true,
-                        minimize: false,
-                        localIdentName: "[local]-[hash:base64:32]"
+                        modules: {
+                            localIdentName: "[local]-[hash:base64:32]",
+                            // mode: "local",
+                            // exportLocalsConvention: "camelCase",
+                            // exportOnlyLocals: false,
+                            //localIdentContext: path.resolve(__dirname, "src"),
+                        }
+                        //camelCase: true,
+                        //minimize: false,
+                        //localIdentName: "[local]-[hash:base64:32]"
                         // minimize: (mode == "production") ? true : false,
                         // localIdentName: (mode == "production") ? "[hash:base64:16]" : "[local]-[hash:base64:16]"
                       }

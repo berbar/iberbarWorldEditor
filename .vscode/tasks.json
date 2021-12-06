@@ -3,12 +3,43 @@
     "tasks": [
         {
             "type": "typescript",
-            "tsconfig": "Projects/Src/Server/tsconfig.json",
+            "tsconfig": "Projects/Src/Common/tsconfig-server.json",
+            "option": "watch",
             "problemMatcher": [
-                "$tsc"
+                "$tsc-watch"
             ],
             "group": "build",
-            "label": "tsc: 构建 - Projects/Src/Server/tsconfig.json"
+            "label": "tsc: 监视 - Common 到 Server"
+        },
+        {
+            "type": "typescript",
+            "tsconfig": "Projects/Src/Common/tsconfig-client.json",
+            "option": "watch",
+            "problemMatcher": [
+                "$tsc-watch"
+            ],
+            "group": "build",
+            "label": "tsc: 监视 - Common 到 Client"
+        },
+        {
+            "type": "typescript",
+            "tsconfig": "Projects/Src/Server/tsconfig.json",
+            "option": "watch",
+            "problemMatcher": [
+                "$tsc-watch"
+            ],
+            "group": "build",
+            "label": "tsc: 监视 - Server"
+        },
+        {
+            "type": "typescript",
+            "tsconfig": "Projects/Src/Client/tsconfig.json",
+            "option": "watch",
+            "problemMatcher": [
+                "$tsc-watch"
+            ],
+            "group": "build",
+            "label": "tsc: 监视 - Client"
         }
     ]
 

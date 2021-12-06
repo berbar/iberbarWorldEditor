@@ -45,3 +45,12 @@ export type UDatabase =
     Type: string;
     Comment: string;
 };
+
+
+
+export enum UDataDefinitionType
+{
+    Enum,
+    Struct,
+    Database
+};

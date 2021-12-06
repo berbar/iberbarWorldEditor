@@ -1,9 +1,17 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
 import iberbar from "./libs/iberbar";
 import { n } from "./test";
 console.log( iberbar.System );
 console.log(n);
+
+
+ipcMain.handle( "hello", function( evt, ...args )
+{
+    console.log( args[0] );
+    evt.sender.send( "hello", "lucy" );
+});
+
 let mainWindow: Electron.BrowserWindow;
 /**
  *

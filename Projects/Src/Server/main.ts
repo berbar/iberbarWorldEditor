@@ -24,6 +24,11 @@ function createWindow(): void {
         //     preload: path.join(__dirname, 'preload.js'),
         // },
         width: 800,
+        webPreferences: {
+            // 下面两个字段解决require not defined
+            nodeIntegration: true,
+            contextIsolation: false
+        }
     });
     // and load the index.html of the app.
     mainWindow.loadFile(path.join(__dirname, '../WWWRoot/index.html'));

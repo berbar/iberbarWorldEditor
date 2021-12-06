@@ -29,7 +29,6 @@ var webpack_conf = {
             },
             {
                 test: /\.scss$/,
-                exclude: /node_modules/,
                 use: [ 
                     //MiniCssExtractPlugin.loader,
                     'style-loader', // adds styles to the DOM
@@ -102,7 +101,6 @@ var webpack_conf = {
             // "ajax": path.resolve( alias_dir, "ajax" ),
             // "@aspnet/signalr": "@aspnet/signalr/dist/esm/index.js",
             //""
-            
         },
     },
     plugins: [
@@ -161,9 +159,10 @@ webpack_conf["devServer"] = {
     publicPath: path.resolve( workspace, "build" )
 };
 
-webpack_conf["externals"] = {
-    "electron": 'require( "electron" )'
-}
+// webpack_conf["externals"] = {
+//     "electron": 'require( "electron" )'
+// }
+webpack_conf["target"] = 'electron-renderer';
 
 console.log( webpack_conf );
 module.exports = webpack_conf;

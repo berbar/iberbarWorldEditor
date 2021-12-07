@@ -28,12 +28,14 @@ export type UStruct =
 
 export type UEnumField =
 {
+    Name: string;
     Comment: string;
     Value: number | string;
 };
 
 export type UEnum =
 {
+    Name: string;
     Comment: string;
     Fields: { [ key: string]: UEnumField };
 };

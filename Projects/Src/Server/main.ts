@@ -7,13 +7,18 @@ import { UDataDefinitionType } from './common/data_type_definitions';
 console.log( iberbar.System );
 console.log(n);
 
+const workspace = "G:\\Test\\TestWorldEditor\\Test";
 
 ipcMain.on( "hello", function( evt, ...args )
 {
     console.log( args[0] );
     evt.sender.send( "hello", "lucy" );
 
-    modParser.SaveType( {Name:"haha"}, "G:\\Test\\TestWorldEditor\\Test", "haha", UDataDefinitionType.Enum, { "format": "json" } );
+    //modParser.SaveType( {Name:"haha"}, workspace, UDataDefinitionType.Enum, "haha", { "format": "json" } );
+    let enumFileText = modParser.ReadType( workspace, UDataDefinitionType.Enum, "haha" );
+    console.log( enumFileText );
+    let enums = modParser.ReadTypeList( workspace, UDataDefinitionType.Enum )
+    console.log( enums );
 });
 
 let mainWindow: Electron.BrowserWindow;

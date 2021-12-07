@@ -2,3 +2,5 @@
 **/package-lock.json
 Projects/Dist/
 Projects/WWWRoot/js
+Projects/Src/Server/common
+Projects/Src/Client/common

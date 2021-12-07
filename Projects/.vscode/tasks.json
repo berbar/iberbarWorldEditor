@@ -3,6 +3,26 @@
     "tasks": [
         {
             "type": "typescript",
+            "tsconfig": "Src/Common/tsconfig-server.json",
+            "option": "watch",
+            "problemMatcher": [
+                "$tsc-watch"
+            ],
+            "group": "build",
+            "label": "tsc: 监视 - Common 到 Server"
+        },
+        {
+            "type": "typescript",
+            "tsconfig": "Src/Common/tsconfig-client.json",
+            "option": "watch",
+            "problemMatcher": [
+                "$tsc-watch"
+            ],
+            "group": "build",
+            "label": "tsc: 监视 - Common 到 Client"
+        },
+        {
+            "type": "typescript",
             "tsconfig": "Src/Server/tsconfig.json",
             "option": "watch",
             "problemMatcher": [
@@ -12,14 +32,20 @@
             "label": "tsc: 监视 - Server"
         },
         {
-            "type": "typescript",
-            "tsconfig": "Src/Client/tsconfig.json",
-            "option": "watch",
-            "problemMatcher": [
-                "$tsc-watch"
+            "type": "shell",
+            "command": [ "./node_modules/.bin/webpack" ],
+            "args": [
+                "--config",
+                "a1-webpack.js",
+                "--mode",
+                "development",
+                "--watch"
             ],
+            "options": {
+                "cwd": "../Autobuild"
+            },
             "group": "build",
-            "label": "tsc: 监视 - Client"
+            "label": "webpack: 监视 - Client"
         }
     ]
 

@@ -12,13 +12,10 @@ export type USaveOptions =
 };
 
 
-export function Save( definition: any, workspace: string, name: string, type: modDataTypeDefs.UDataDefinitionType, options?: USaveOptions )
+export function SaveType( definition: any, workspace: string, name: string, type: modDataTypeDefs.UDataDefinitionType, options?: USaveOptions )
 {
     let typeName = modEnv.NamesForDataTypeDefs[ type ];
     let filepath = modPath.resolve( workspace, "Type", typeName, name + ".json" )
-    let definitionJsonText = JSON.stringify( definition );
-    modFs.open( filepath, "w", function()
-    {
-
-    } );
+    let definitionJsonText = JSON.stringify( definition, null, 4 );
+    modFs.writeFileSync( filepath, definitionJsonText );
 }

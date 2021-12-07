@@ -2,14 +2,18 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
 import iberbar from "./libs/iberbar";
 import { n } from "./test";
+import * as modParser from "./parser";
+import { UDataDefinitionType } from './common/data_type_definitions';
 console.log( iberbar.System );
 console.log(n);
 
 
-ipcMain.handle( "hello", function( evt, ...args )
+ipcMain.on( "hello", function( evt, ...args )
 {
     console.log( args[0] );
     evt.sender.send( "hello", "lucy" );
+
+    modParser.SaveType( {Name:"haha"}, "G:\\Test\\TestWorldEditor\\Test", "haha", UDataDefinitionType.Enum, { "format": "json" } );
 });
 
 let mainWindow: Electron.BrowserWindow;

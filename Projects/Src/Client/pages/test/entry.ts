@@ -1,10 +1,10 @@
 
 import { ipcRenderer } from "electron";
-import * as eee from "./eee.scss";
+import eee from "./eee.scss";
 
 console.debug( "test entry" )
-console.debug( eee.cssModules.aaaa );
-console.debug( eee.cssModules.eee );
+console.debug( eee.aaaa );
+console.debug( eee.eee );
 
 ipcRenderer.on( "hello", function( evt, ...args )
 {

@@ -17,6 +17,7 @@ export type UStructField =
     Type: UBaseDataType;
     Comment: string;
     Database?: string;
+    Elements?: number;
 };
 
 export type UStruct =

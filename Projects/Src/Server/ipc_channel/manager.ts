@@ -12,6 +12,7 @@ type UChannelNode =
     instance: Object;
     persistent: boolean;
     events: { [ key: string ]: iberbar.System.Reflection.CMethodInfo };
+    listening: boolean;
 }
 
 
@@ -49,7 +50,8 @@ export class CIpcChannelManager
             type: clsType,
             instance: null,
             persistent: attrChannel.Persistent,
-            events: events
+            events: events,
+            listening: false
         };
         this.m_channels[ attrChannel.Name ] = channelNode;
 
@@ -61,42 +63,53 @@ export class CIpcChannelManager
         for ( const name in this.m_channels )
         {
             let channelNode = this.m_channels[ name ];
-            if ( channelNode.instance != null )
-                continue;
             if ( channelNode.persistent == false )
                 continue;
-            this.LoadForce( channelNode );
+            if ( channelNode.instance == null )
+            {
+                channelNode.instance = this.m_ioc.Resolve( channelNode.type );
+            }
+            this.ListenNode( channelNode );
         }
     }
 
     public LoadOne( name: string ): void
     {
         let channelNode = this.m_channels[ name ];
-        if ( channelNode.instance != null )
-            return;
-        this.LoadForce( channelNode );
-    }
-
-    protected LoadForce( channelNode: UChannelNode ): void
-    {
-        //channelNode.instance = channelNode.type.GetConstructor().Invoke();
         if ( channelNode.instance == null )
         {
             channelNode.instance = this.m_ioc.Resolve( channelNode.type );
         }
-        
+        this.ListenNode( channelNode );
+    }
+
+    protected ListenNode( channelNode: UChannelNode ): void
+    {
+        if ( channelNode.listening == true )
+            return;
+
         if ( channelNode.persistent == true )
         {
-            ipcMain.on( channelNode.name, this.OnCommonChannel.bind( this ) );
+            ipcMain.on( channelNode.name, function( this: UChannelNode, event, ...args: any[] )
+            {
+                let handler = channelNode.events[ args[ 0 ] ];
+                if ( handler != null )
+                {
+                    handler.Invoke( channelNode.instance, ...args );
+                }
+            } );
         }
         else
         {
-            ipcMain.once( channelNode.name, this.OnCommonChannel.bind( this ) );
+            ipcMain.once( channelNode.name, function( this: UChannelNode, event, ...args: any[] )
+            {
+                channelNode.listening = false;
+                let handler = channelNode.events[ args[ 0 ] ];
+                if ( handler != null )
+                {
+                    handler.Invoke( channelNode.instance, ...args );
+                }
+            } );
         }
-    }
-
-    protected OnCommonChannel( event: IpcMainEvent, ...args: any[] )
-    {
-
     }
 };

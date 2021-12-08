@@ -112,4 +112,10 @@ export class CIpcChannelManager
             } );
         }
     }
+
+
+
+
+    private static sm_instance: CIpcChannelManager = new CIpcChannelManager();
+    public static sGetInstance() { return this.sm_instance; }
 };

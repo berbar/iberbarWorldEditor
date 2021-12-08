@@ -4,22 +4,43 @@ import iberbar from "./libs/iberbar";
 import { n } from "./test";
 import * as modParser from "./parser";
 import { UDataDefinitionType } from './common/data_type_definitions';
+import { Register } from './ipc_channel';
+import { CIpcChannelManager } from './ipc_channel/manager';
 console.log( iberbar.System );
 console.log(n);
 
 const workspace = "G:\\Test\\TestWorldEditor\\Test";
 
-ipcMain.on( "hello", function( evt, ...args )
-{
-    console.log( args[0] );
-    evt.sender.send( "hello", "lucy" );
+var ioc: iberbar.Autofac.IContainer = null;
 
-    //modParser.SaveType( {Name:"haha"}, workspace, UDataDefinitionType.Enum, "haha", { "format": "json" } );
-    let enumFileText = modParser.ReadType( workspace, UDataDefinitionType.Enum, "haha" );
-    console.log( enumFileText );
-    let enums = modParser.ReadTypeList( workspace, UDataDefinitionType.Enum )
-    console.log( enums );
-});
+
+
+function Main()
+{
+    let cb = new iberbar.Autofac.CContainerBuilder();
+    
+    Register( cb );
+
+    ioc = cb.Build();
+
+    CIpcChannelManager.sGetInstance().LoadAllPersistent();
+}
+
+Main();
+
+
+
+// ipcMain.on( "hello", function( evt, ...args )
+// {
+//     console.log( args[0] );
+//     evt.sender.send( "hello", "lucy" );
+
+//     //modParser.SaveType( {Name:"haha"}, workspace, UDataDefinitionType.Enum, "haha", { "format": "json" } );
+//     let enumFileText = modParser.ReadType( workspace, UDataDefinitionType.Enum, "haha" );
+//     console.log( enumFileText );
+//     let enums = modParser.ReadTypeList( workspace, UDataDefinitionType.Enum )
+//     console.log( enums );
+// });
 
 let mainWindow: Electron.BrowserWindow;
 /**

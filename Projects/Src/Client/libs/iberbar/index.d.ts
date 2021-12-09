@@ -1272,6 +1272,548 @@ declare namespace iberbar.Autofac.Features.Scanning {
     }
 }
 
+declare namespace iberbar.MVC.Attributes {
+    class CAddControllerAttribute extends System.CAttribute {
+        protected m_controllerType: System.Reflection.IDelayType;
+        constructor(controllerType: System.Reflection.IDelayType);
+        get ControllerType(): System.Reflection.CType;
+    }
+}
+declare namespace iberbar.MVC.Attributes {
+    class CAddViewComponentAttribute extends System.CAttribute {
+        private readonly m_componentType;
+        constructor(componentType: System.Reflection.IDelayType);
+        get ComponentType(): System.Reflection.CType;
+    }
+}
+declare namespace iberbar.MVC.Attributes {
+    class CDisableViewComponentAttribute extends System.CAttribute {
+        private readonly m_componentType;
+        constructor(componentType: System.Reflection.IDelayType);
+        get ComponentType(): System.Reflection.CType;
+    }
+}
+declare namespace iberbar.MVC.Attributes {
+    class CViewModelAttribute extends System.CAttribute {
+    }
+}
+declare namespace iberbar.MVC {
+    namespace Attributes {
+        class SetActionSummaryAttribute extends System.CAttribute {
+            protected m_name: string;
+            protected m_summary: string;
+            constructor(name: string, summary: string);
+            get Name(): string;
+            get Summary(): string;
+        }
+    }
+}
+declare namespace iberbar.MVC {
+    namespace Attributes {
+        class CSetControllerAttribute extends System.CAttribute {
+            protected m_controllerType: System.Reflection.IDelayType;
+            constructor(controllerType: System.Reflection.IDelayType);
+            get ControllerType(): System.Reflection.CType;
+        }
+    }
+    /**
+     * **特性**
+     *
+     * + 标记视图所使用的控制器类型
+     * + 修饰：类
+     *
+     * @param controllerType 控制器类型
+     */
+    function SetController(controllerType: System.Reflection.IDelayType): System.UDecoratorFunctionType_ForClass;
+}
+declare namespace iberbar.MVC.Registration {
+    class CSingleInstanceViewAttribute extends System.CAttribute {
+    }
+    function SingleInstanceView(): System.UDecoratorFunctionType_ForClass;
+}
+declare namespace iberbar.MVC.Core {
+    abstract class CActionBinder {
+        abstract BindActions(view: CView, handlerType: object): IActionBinderResult;
+    }
+}
+declare namespace iberbar.MVC.Core {
+    class CComponentBindActions implements IComponentInit, System.IDisposable {
+        private m_binderResult;
+        InitView(view: CView): void;
+        ReInitView(view: CView): void;
+        Dispose(): void;
+    }
+}
+declare namespace iberbar.MVC.Core {
+    class CComponentBindModels implements IComponentInit {
+        InitView(view: CView): void;
+        ReInitView(view: CView): void;
+    }
+}
+declare namespace iberbar.MVC.Core {
+    abstract class CComponentKernel<T extends (...args: any) => any> implements System.IDisposable {
+        abstract Create(view: CView, ...args: Parameters<T>): ReturnType<T>;
+        abstract ReCreate(view: CView): void;
+        abstract Show(onshow: System.TCallback<() => void>): void;
+        abstract Hide(onhide: System.TCallback<() => void>): void;
+        abstract FadeIn(duration: number, onshow: System.TCallback<() => void>): void;
+        abstract FadeOut(duration: number, onhide: System.TCallback<() => void>): void;
+        abstract IsShow(): boolean;
+        abstract Dispose(): void;
+    }
+}
+declare namespace iberbar.MVC.Core {
+    class CInitComponent_ViewController implements IComponentInit, System.IDisposable {
+        private m_binderResults;
+        InitView(view: CView): void;
+        ReInitView(view: CView): void;
+        Dispose(): void;
+    }
+}
+declare namespace iberbar.MVC.Core {
+    class CDefaultMapper implements CMapper, System.Collections.Generic.IEqualityComparer<System.Reflection.CType> {
+        private m_componentKernelType;
+        private m_componentTypes;
+        private m_componentTypesForViews;
+        constructor(componentKernelType: System.Reflection.CType<Core.CComponentKernel<any>>, componentTypes: Array<System.Reflection.CType>);
+        GetComponentKernelType(): System.Reflection.CType<Core.CComponentKernel<any>>;
+        GetComponentTypes(viewType: System.Reflection.CType<CView>): Array<System.Reflection.CType>;
+        Equals(a: System.Reflection.CType, b: System.Reflection.CType): boolean;
+    }
+}
+declare namespace iberbar.MVC.Core {
+    abstract class CViewModelBinder {
+        /**
+         * 绑定视图模型
+         * @param view 操作绑定组件的视图实例
+         * @param model 绑定对象
+         */
+        abstract BindModel(view: CView, model: object): void;
+    }
+}
+declare namespace iberbar.MVC.Core {
+    interface IActionBinderResult extends System.IDisposable {
+    }
+}
+declare namespace iberbar.MVC.Core {
+    interface IComponentInit {
+        InitView(view: CView): void;
+        ReInitView(view: CView): void;
+    }
+}
+declare namespace iberbar.MVC.Core {
+    abstract class CMapper {
+        abstract GetComponentKernelType(): System.Reflection.CType<Core.CComponentKernel<any>>;
+        abstract GetComponentTypes(viewType: System.Reflection.CType<CView>): Array<System.Reflection.CType>;
+    }
+}
+declare namespace iberbar.MVC {
+    function AddController(controllerType: System.Reflection.IDelayType): System.UDecoratorFunctionType_ForClass;
+}
+declare namespace iberbar.MVC {
+    function AddViewComponent(componentType: System.Reflection.IDelayType): System.UDecoratorFunctionType_ForClass;
+}
+declare namespace iberbar.MVC {
+    class CBuilder {
+        private m_cb;
+        private m_componentKernelType;
+        private m_componentTypes;
+        private m_componentTypesCommon;
+        constructor(cb: Autofac.CContainerBuilder);
+        /**
+         * 设置内核组件
+         * @param componentKernelType
+         */
+        SetComponentKernel(componentKernelType: System.Reflection.CType<Core.CComponentKernel<any>>): void;
+        /**
+         * 添加通用的组件
+         * @param componentType
+         */
+        AddComponent(componentType: System.Reflection.CType, common?: boolean): void;
+        /**
+         * 注册模型绑定组件
+         * @param modelBinderType 模型绑定器的类型
+         * @param modelComponentType (可选)组件类型，默认 iberbar.MVC.Core.CComponentBindModels
+         */
+        AddComponentBindModels(modelBinderType: System.Reflection.CType<Core.CViewModelBinder>, modelComponentType?: System.Reflection.CType<object>): void;
+        /**
+         * 注册事件绑定组件
+         * @param actionBinderType
+         * @param actionComponentType
+         * @param controllerComponentType
+         */
+        AddComponentBindActions(actionBinderType: System.Reflection.CType<Core.CActionBinder>, actionComponentType?: System.Reflection.CType<object>, controllerComponentType?: System.Reflection.CType<object>): void;
+        /**
+         * 注册视图类型，搜索其使用的控制器类型并注册
+         * @param viewType 视图类型
+         */
+        RegisterView<T extends CView>(viewType: System.Reflection.CType<T>): Autofac.Builder.IRegistrationBuilder<T>;
+        Build(): void;
+    }
+}
+declare namespace iberbar.MVC {
+    abstract class CView implements System.IDisposable {
+        private m_id;
+        private m_componentKernel;
+        private m_components;
+        /**
+         * autofac注入
+         */
+        private m_lifetimeScope;
+        set LifetimeScope(value: iberbar.Autofac.ILifetimeScope);
+        get LifetimeScope(): iberbar.Autofac.ILifetimeScope;
+        constructor();
+        set ID(id: string);
+        get ID(): string;
+        Create(...args: any[]): any;
+        ReCreate(): any;
+        protected OnCreated(): void;
+        protected InitComponentKernel(...args: any[]): any;
+        protected ResolveComponents(): void;
+        protected InitComponents(): void;
+        GetComponentKernel<T extends (...args: any[]) => any>(): Core.CComponentKernel<T>;
+        GetComponent<T extends object>(type: System.Reflection.CType<T>): T;
+        Show(): void;
+        Hide(): void;
+        FadeIn(duration?: number): void;
+        FadeOut(duration?: number): void;
+        IsShow(): boolean;
+        GetMapper(): Core.CMapper;
+        Dispose(): void;
+        protected OnShow(): void;
+        protected OnHide(): void;
+    }
+}
+declare namespace iberbar.MVC {
+    function DisableViewComponent(componentType: System.Reflection.IDelayType): System.UDecoratorFunctionType_ForClass;
+}
+declare namespace iberbar.MVC {
+    function ViewModel(): System.UDecoratorFunctionType_ForField;
+}
+
+/// <reference types="jquery" />
+declare namespace iberbar.MVC.KernelJquery.Attributes {
+    class CDependOnViewAttribute extends System.CAttribute {
+        protected m_selectorText: string;
+        protected m_fromBody: boolean;
+        protected m_createMethod: UViewCreateStyle;
+        protected m_viewType: System.Reflection.CType<CView>;
+        protected m_tag: any;
+        constructor(viewType: System.Reflection.CType<CView>, selectorText: string);
+        get ViewType(): System.Reflection.CType<CView>;
+        get SelectorText(): string;
+        set FromBody(value: boolean);
+        get FromBody(): boolean;
+        set CreateMethod(value: UViewCreateStyle);
+        get CreateMethod(): UViewCreateStyle;
+        set Tag(value: any);
+        get Tag(): any;
+    }
+}
+declare namespace iberbar.MVC.KernelJquery.Attributes {
+    class CFloatAttribute extends System.CAttribute {
+        private m_absolutePosition;
+        private m_fixClass;
+        private m_autoHide;
+        private m_autoHideTimeout;
+        private m_isPopMenu;
+        constructor(absolutePosition: boolean);
+        get AbsolutePosition(): boolean;
+        get FixClass(): string;
+        set FixClass(value: string);
+        get AutoHide(): boolean;
+        set AutoHide(value: boolean);
+        get AutoHideTimeout(): number;
+        set AutoHideTimeout(value: number);
+        get IsPopMenu(): boolean;
+        set IsPopMenu(value: boolean);
+    }
+}
+declare namespace iberbar.MVC.KernelJquery.Attributes {
+    class COverScrollAttribute extends System.CAttribute {
+        protected m_selectorText: string;
+        constructor(selectorText: string);
+        get SelectorText(): string;
+    }
+}
+declare namespace iberbar.MVC.KernelJquery.Attributes {
+    class CSetActionAttribute extends System.CAttribute {
+        protected m_event: string;
+        protected m_selectorText: string;
+        protected m_fromBody: boolean;
+        constructor(event: string, selectorText: string, fromBody: boolean);
+        get Event(): string;
+        get SelectorText(): string;
+        get FromBody(): boolean;
+    }
+}
+declare namespace iberbar.MVC.KernelJquery.Attributes {
+    class CTriggerElementAttribute extends System.CAttribute {
+    }
+}
+declare namespace iberbar.MVC.KernelJquery.Attributes {
+    class CTriggerEventAttribute extends System.CAttribute {
+    }
+}
+declare namespace iberbar.MVC.KernelJquery.Attributes {
+    class CTriggerViewAttribute extends System.CAttribute {
+    }
+}
+declare namespace iberbar.MVC.KernelJquery.Attributes {
+    class CWatchOverScrollAttribute extends System.CAttribute {
+    }
+}
+declare namespace iberbar.MVC.KernelJquery {
+    namespace Attributes {
+        class FromElementAttribute extends System.CAttribute {
+            protected m_selectorText: string;
+            protected m_fromBody: boolean;
+            constructor(selectorText: string, fromBody: boolean);
+            get SelectorText(): string;
+            get FromBody(): boolean;
+        }
+    }
+    /**
+     * **(特性)**
+     *
+     * + 获取JQuery元素，内部会调用 System.Reflection.Enumerable 装饰器
+     * + 修饰：字段
+     *
+     * @param selectorText JQuery选择器
+     * @param fromBody (可选)是否从Body开始查找选择
+     */
+    function FromElement(selectorText: string, fromBody?: boolean): System.UDecoratorFunctionType_ForField;
+}
+declare namespace iberbar.MVC.KernelJquery {
+    namespace Attributes {
+        class FromViewAttribute extends System.CAttribute {
+            private m_tag;
+            constructor();
+            set Tag(value: any);
+            get Tag(): any;
+        }
+    }
+    function FromView(opts?: {
+        tag?: any;
+    }): System.UDecoratorFunctionType_ForField;
+}
+declare namespace iberbar.MVC.KernelJquery.Components {
+    class CActionBinder implements Core.CActionBinder {
+        BindActions(view: CView, handlerType: System.Reflection.CType): Core.IActionBinderResult;
+        protected ReBindActionsForType(view: CView, type: System.Reflection.CType): void;
+        protected InvokeControllerMethod(view: CView, type: System.Reflection.CType, elementEvent: JQuery, jqEvent: JQuery.Event, methodInfo: System.Reflection.CMethodInfo): boolean;
+    }
+}
+declare namespace iberbar.MVC.KernelJquery.Components {
+    class CActionBinderResult implements Core.IActionBinderResult {
+        Dispose(): void;
+    }
+}
+declare namespace iberbar.MVC.KernelJquery.Components {
+    class CComponentDependOnViews implements Core.IComponentInit {
+        private m_viewsDependOn;
+        InitView(view: CView): void;
+        ReInitView(view: CView): void;
+        get Views(): any;
+    }
+    namespace CComponentDependOnViews {
+        type InitResult = Array<{
+            tag: any;
+            viewType: System.Reflection.CType<CView>;
+            viewInstance: CView;
+        }>;
+    }
+}
+declare namespace iberbar.MVC.KernelJquery.Components {
+    class CComponentFadeIn {
+        private m_duration;
+        get Duration(): JQuery.Duration;
+        set Duration(value: JQuery.Duration);
+    }
+}
+declare namespace iberbar.MVC.KernelJquery.Components {
+    class CComponentFadeOut {
+        private m_duration;
+        get Duration(): JQuery.Duration;
+        set Duration(value: JQuery.Duration);
+    }
+}
+declare namespace iberbar.MVC.KernelJquery.Components {
+    class CComponentFloat implements Core.IComponentInit {
+        private m_floatAttribute;
+        private m_timer;
+        private m_elementRoot;
+        InitView(view: CView): void;
+        ReInitView(view: CView): void;
+        private HideNow;
+        private ClearTimer;
+    }
+}
+declare namespace iberbar.MVC.KernelJquery.Components {
+    function AllocateID(): string;
+    class CComponentKernelJQuery extends MVC.Core.CComponentKernel<IViewCreator> {
+        private m_uniqueId;
+        private m_elementRoot;
+        private m_componentFadeIn;
+        private m_componentFadeOut;
+        Create(view: CView, element: JQuery, method: UViewCreateStyle): void;
+        ReCreate(view: CView): void;
+        get ElementRoot(): JQuery;
+        FadeIn(duration: number, onshow: System.TCallback<() => void>): void;
+        FadeOut(duration: number, onhide: System.TCallback<() => void>): void;
+        Show(onshow: System.TCallback<() => void>): void;
+        Hide(onhide: System.TCallback<() => void>): void;
+        IsShow(): boolean;
+        Dispose(): void;
+    }
+}
+declare namespace iberbar.MVC.KernelJquery.Components {
+    class CComponentOverScroll implements Core.IComponentInit {
+        InitView(view: CView): void;
+        ReInitView(view: CView): void;
+        private FindWatchMethod;
+        private SetOverScroll;
+    }
+}
+declare namespace iberbar.MVC.KernelJquery.Components {
+    class CViewModelBinder extends MVC.Core.CViewModelBinder {
+        BindModel(view: CView, model: object): void;
+    }
+}
+declare namespace iberbar.MVC.KernelJquery {
+    function AddViewComponentOverScroll(): ClassDecorator;
+}
+declare namespace iberbar.MVC.KernelJquery {
+    function DependOnView(viewType: System.Reflection.CType<CView>, selectorText: string, options?: {
+        fromBody?: boolean;
+        createMethod?: UViewCreateStyle;
+        tag?: any;
+    }): System.UDecoratorFunctionType_ForClass;
+}
+declare namespace iberbar.MVC {
+    interface CBuilder {
+        SetComponentKernelJquery(): void;
+        /**
+         * 注册JQuery模型绑定组件
+         * @param modelComponentType (可选)组件类型，默认 iberbar.MVC.Core.CComponentBindModels
+         */
+        AddComponentBindModelsJquery(modelComponentType?: System.Reflection.CType<object>): void;
+        /**
+         * 注册JQuery事件绑定组件
+         * @param actionComponentType
+         * @param controllerComponentType
+         */
+        AddComponentBindActionsJquery(actionComponentType?: System.Reflection.CType<object>, controllerComponentType?: System.Reflection.CType<object>): void;
+        /**
+         * 注册JQuery视图依赖组件，必须放在AddComponentBindModelsJQuery和AddComponentBindActionsJQuery前面
+         */
+        AddComponentDependOnView(): void;
+    }
+}
+declare namespace iberbar.MVC {
+    interface CView {
+        Create(...args: Parameters<KernelJquery.IViewCreator>): ReturnType<KernelJquery.IViewCreator>;
+        GetElementRoot(): JQuery;
+        ReturnHTML(): string;
+        ReturnClasses(): Array<string>;
+        GetComponentKernelJquery(): KernelJquery.Components.CComponentKernelJQuery;
+    }
+}
+declare namespace iberbar.MVC.KernelJquery {
+    type UFloatOptions = {
+        absolutePosition: boolean;
+        fixClass?: string;
+        autoHide?: boolean;
+        autoHideTimeout?: number;
+        isPopMenu?: boolean;
+    };
+    function Float(options: UFloatOptions): System.UDecoratorFunctionType_ForClass;
+}
+declare namespace iberbar.MVC.KernelJquery {
+    interface IViewCreator {
+        (element: JQuery, method: UViewCreateStyle): void;
+    }
+}
+declare namespace iberbar.MVC.KernelJquery {
+    function OverScroll(selectorText: string): System.UDecoratorFunctionType_ForClass;
+}
+declare namespace iberbar.MVC.KernelJquery {
+    const uActionName_FocusIn = "focusin";
+    const uActionName_FocusOut = "focusout";
+    const uActionName_MouseOver = "mouseover";
+    const uActionName_MouseOut = "mouseout";
+    /**
+ * **特性**
+ *
+ * + 标志控制器方法，绑定JQuery事件
+ * + 修饰：方法
+ *
+ * @param event 事件类型
+ * @param selectorText JQuery选择器
+ * @param fromBody 是否从Body开始选择
+ */
+    function SetAction(event: string, selectorText: string, fromBody?: boolean): System.UDecoratorFunctionType_ForMethod;
+    function SetActionClick(selectorText: string, fromBody?: boolean): System.UDecoratorFunctionType_ForMethod;
+    function SetActionValueChange(selectorText: string, fromBody?: boolean): System.UDecoratorFunctionType_ForMethod;
+    function SetActionSearch(selectorText: string, fromBody?: boolean): System.UDecoratorFunctionType_ForMethod;
+    function SetActionFocusIn(selectorText: string, fromBody?: boolean): System.UDecoratorFunctionType_ForMethod;
+    function SetActionFocusOut(selectorText: string, fromBody?: boolean): System.UDecoratorFunctionType_ForMethod;
+    function SetActionMouseOver(selectorText: string, fromBody?: boolean): System.UDecoratorFunctionType_ForMethod;
+    function SetActionMouseOut(selectorText: string, fromBody?: boolean): System.UDecoratorFunctionType_ForMethod;
+}
+declare namespace iberbar.MVC.KernelJquery {
+    function TriggerElement(): System.UDecoratorFunctionType_ForParameter;
+}
+declare namespace iberbar.MVC.KernelJquery {
+    function TriggerEvent(): System.UDecoratorFunctionType_ForParameter;
+}
+declare namespace iberbar.MVC.KernelJquery {
+    function TriggerView(): System.UDecoratorFunctionType_ForParameter;
+}
+declare namespace iberbar.MVC.KernelJquery {
+    enum UOverScrollEvent {
+        OnBegin = 0,
+        OnScrolling = 1,
+        OnEnd = 2,
+        OnScrollToTop = 3,
+        OnScrollToBottom = 4
+    }
+}
+declare namespace iberbar.MVC.KernelJquery {
+    enum UViewCreateStyle {
+        Append = 0,
+        Before = 1,
+        After = 2
+    }
+}
+declare namespace iberbar.MVC.KernelJquery.ViewModelConvert {
+    /**
+* 将data数据反射到当前的ViewModel中
+* @param data 数据
+*/
+    function FromObject(model: object, data: any): void;
+    /**
+     * 将当前的ViewModel模型反射到数据
+     * @param type 数据类型
+     */
+    function ToObject<T extends object>(model: object, type: System.Reflection.CType<T>): T;
+}
+declare namespace iberbar.MVC.KernelJquery {
+    /**
+     * 例子
+     *
+     * ```typescript
+     *  class CExample
+     *  {
+     *      protected OnWatchScroll( element: JQuery, event: UOverScrollEvent ): void
+     *      {
+     *      }
+     *  }
+     * ```
+     */
+    function WatchOverScroll(): System.UDecoratorFunctionType_ForMethod;
+}
+
 declare namespace iberbar.Event {
     class CEvent {
     }

@@ -12,7 +12,7 @@ const modBabelTypeofSymbol = require("@babel/plugin-transform-typeof-symbol");
 const workspace = path.resolve( __dirname, ".." );
 const entry_dir = path.resolve( workspace, "Projects", "Src", "Client", "pages" );
 const build_dir = path.resolve( workspace, "Projects", "WWWRoot" );
-//const alias_dir = path.resolve( workspace, "WebView", "a1" );
+const alias_dir = path.resolve( workspace, "Projects", "Src", "Client"  );
 
 var webpack_conf = {
     entry: {
@@ -93,9 +93,9 @@ var webpack_conf = {
         extensions: ['.json', '.js', '.jsx', "scss", '.css', '.ts'],
         // alias和tsconfig里面的baseurl对应
         alias: {
-            // "common": path.resolve( alias_dir, "common" ),
+            "common": path.resolve( alias_dir, "common" ),
             // "generated": path.resolve( alias_dir, "generated" ),
-            // "views": path.resolve( alias_dir, "views" ),
+            "views": path.resolve( alias_dir, "views" ),
             // //"widgets": path.resolve( alias_dir, "widgets" ),
             // "style": path.resolve( alias_dir, "style" ),
             // "ajax": path.resolve( alias_dir, "ajax" ),

@@ -19,7 +19,12 @@ type UChannelNode =
 export class CIpcChannelManager
 {
     protected m_ioc: iberbar.Autofac.IContainer = null;
-    protected m_channels: { [ key: string ]: UChannelNode } = null;
+    protected m_channels: { [ key: string ]: UChannelNode } = {};
+
+    public SetIoc( ioc: iberbar.Autofac.IContainer ): void
+    {
+        this.m_ioc = ioc;
+    }
 
     public Register( clsType: iberbar.System.Reflection.CType ): void
     {
@@ -36,7 +41,7 @@ export class CIpcChannelManager
             return;
         }
         let events = {};
-        let methods = channelNode.type.GetMethods();
+        let methods = clsType.GetMethods();
         for ( let i = 0, s = methods.length; i < s; i ++ )
         {
             let methodTemp = methods[ i ];
@@ -54,8 +59,6 @@ export class CIpcChannelManager
             listening: false
         };
         this.m_channels[ attrChannel.Name ] = channelNode;
-
-
     }
 
     public LoadAllPersistent(): void

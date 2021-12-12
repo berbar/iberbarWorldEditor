@@ -5,11 +5,17 @@
 <title>菜鸟教程(runoob.com)</title>
 </head>
 <body>
+    <!-- Insert this line above script imports  -->
+    <script>
+        if (typeof module === 'object') {window.module = module; module = undefined;}
+    </script>
+    <script type="text/javascript" src="./libs/jquery.min.js"></script>
+    <script type="text/javascript" src="./libs/Reflect.js"></script>
     <script type="text/javascript" src="./libs/iberbar/index.js"></script>
     <script type="text/javascript">
         console.debug( iberbar.System );
     </script>
-    <script type="text/javascript" src="./js/test/index.js"></script>
+    <script type="text/javascript" src="./js/main/index.js"></script>
     <h1>我的第一个标题</h1>
     <p>我的第一个段落。</p>
 </body>

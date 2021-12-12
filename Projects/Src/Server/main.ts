@@ -23,6 +23,7 @@ function Main()
 
     ioc = cb.Build();
 
+    CIpcChannelManager.sGetInstance().SetIoc( ioc );
     CIpcChannelManager.sGetInstance().LoadAllPersistent();
 }
 

@@ -1,5 +1,7 @@
 interface Style
 {
+    fileTab: string;
+    tabNode: string;
     eee: string;
     aaaa: string;
 }

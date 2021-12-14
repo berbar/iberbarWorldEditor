@@ -1,0 +1,19 @@
+
+.main
+{
+    display: flex;
+    flex-direction: row;
+
+    .left-layout
+    {
+        width: 200px;
+    }
+    
+    
+    .right-layout
+    {
+        width: 0;
+        flex: 1;
+    }
+}
+

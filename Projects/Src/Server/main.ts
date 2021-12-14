@@ -61,6 +61,7 @@ function createWindow(): void {
             contextIsolation: false
         }
     });
+    mainWindow.maximize();
     // and load the index.html of the app.
     mainWindow.loadFile(path.join(__dirname, '../WWWRoot/index.html'));
     // Open the DevTools.

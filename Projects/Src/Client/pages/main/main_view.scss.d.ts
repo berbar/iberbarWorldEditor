@@ -1,7 +1,8 @@
 interface Style
 {
-    eee: string;
-    aaaa: string;
+    main: string;
+    leftLayout: string;
+    rightLayout: string;
 }
 declare const esModuleStyle: Style;
 export default esModuleStyle;

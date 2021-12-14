@@ -1,10 +1,10 @@
 
 import { ipcRenderer } from "electron";
-import eee from "./eee.scss";
+import  style from "./eee.scss";
 
 console.debug( "test entry" )
-console.debug( eee.aaaa );
-console.debug( eee.eee );
+console.debug( style.aaaa );
+console.debug( style.eee );
 
 ipcRenderer.on( "hello", function( evt, ...args )
 {

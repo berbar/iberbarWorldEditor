@@ -1,5 +1,2 @@
 
-export class CTabView extends iberbar.MVC.CView
-{
-
-};
+export * from "./filetab";

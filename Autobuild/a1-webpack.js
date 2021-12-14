@@ -13,6 +13,15 @@ const workspace = path.resolve( __dirname, ".." );
 const entry_dir = path.resolve( workspace, "Projects", "Src", "Client", "pages" );
 const build_dir = path.resolve( workspace, "Projects", "WWWRoot" );
 const alias_dir = path.resolve( workspace, "Projects", "Src", "Client"  );
+const env = process.env.NODE_ENV;
+
+//let css_ident_name = '[path][name]__[local]';
+let css_ident_name = "[local]-[hash:base64:32]";
+if ( env == "prodution" )
+{
+    //css_ident_name = '[hash:base64:32]';
+    css_ident_name = "[local]-[hash:base64:32]";
+}
 
 var webpack_conf = {
     entry: {
@@ -32,17 +41,19 @@ var webpack_conf = {
                 use: [ 
                     //MiniCssExtractPlugin.loader,
                     'style-loader', // adds styles to the DOM
-                    '@opd/css-modules-typings-loader',
+                    'css-modules-ts-definitions-loader',
                     {
                       loader: 'css-loader', // converts CSS into CommonJS
                       options: {
                         modules: {
-                            localIdentName: "[local]-[hash:base64:32]",
+                            localIdentName: css_ident_name,
                             // mode: "local",
-                            // exportLocalsConvention: "camelCase",
+                            
+                            exportLocalsConvention: "camelCase",
                             // exportOnlyLocals: false,
                             //localIdentContext: path.resolve(__dirname, "src"),
-                        }
+                        },
+                        esModule: true,
                         //camelCase: true,
                         //minimize: false,
                         //localIdentName: "[local]-[hash:base64:32]"

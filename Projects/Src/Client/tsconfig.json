@@ -4,6 +4,7 @@
         "target": "ES6",
         "baseUrl": ".",
         "outDir": "../../WWWRoot",
+        "experimentalDecorators": true,
         "typeRoots": [
             "./libs",
             "./node_modules/@types"

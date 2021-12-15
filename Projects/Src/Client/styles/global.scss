@@ -1,0 +1,36 @@
+
+
+$FontFamily : '微软雅黑', "microsoft yahei", Arial, "SimHei", Helvetica, sans-serif,'Courier New', Courier, monospace;
+
+body {
+    font-family: $FontFamily;
+    background: #f1f1f1;
+    overflow: visible;
+    //text-align: center;
+}
+
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+
+input
+{
+    font-family: $FontFamily;
+    padding: 4px;
+    width: auto;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+textarea
+{
+    font-family: $FontFamily;
+    line-height: 1.5;
+    padding: 4px;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}

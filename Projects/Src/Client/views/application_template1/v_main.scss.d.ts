@@ -1,9 +1,10 @@
 interface Style
 {
     main: string;
-    menusLayout: string;
-    resourcesLayout: string;
+    headerLayout: string;
+    content: string;
     contentLayout: string;
+    menuUserInfo: string;
 }
 declare const esModuleStyle: Style;
 export default esModuleStyle;

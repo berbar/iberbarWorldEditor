@@ -1,7 +1,8 @@
 
+import { CMainContentAbstract } from "views/application_template1/v_main_content";
 import style from "./main_view.scss";
 
-export class CMainView extends iberbar.MVC.CView
+export class CMainView extends CMainContentAbstract
 {
     public ReturnClasses(): string[]
     {
@@ -11,8 +12,9 @@ export class CMainView extends iberbar.MVC.CView
     public ReturnHTML(): string
     {
         return /*html*/`
-        <div class="${style.leftLayout}"></div>
-        <div class="${style.rightLayout}"></div>
+        <div class="${style.menusLayout}"></div>
+        <div class="${style.resourcesLayout}"></div>
+        <div class="${style.contentLayout}"></div>
         `;
     }
 };

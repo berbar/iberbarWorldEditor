@@ -108,7 +108,7 @@ var webpack_conf = {
             // "generated": path.resolve( alias_dir, "generated" ),
             "views": path.resolve( alias_dir, "views" ),
             // //"widgets": path.resolve( alias_dir, "widgets" ),
-            // "style": path.resolve( alias_dir, "style" ),
+            "styles": path.resolve( alias_dir, "styles" ),
             // "ajax": path.resolve( alias_dir, "ajax" ),
             // "@aspnet/signalr": "@aspnet/signalr/dist/esm/index.js",
             //""

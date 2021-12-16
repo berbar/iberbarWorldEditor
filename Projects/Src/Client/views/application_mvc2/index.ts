@@ -1,4 +1,4 @@
-
+import { CComponentBindFields } from "./bind_fields";
 
 
 export abstract class CApplication
@@ -32,6 +32,7 @@ export abstract class CApplication
         mvcBuilder.SetComponentKernelJquery();
         mvcBuilder.AddComponentDependOnView();
         mvcBuilder.AddComponentBindModelsJquery();
+        mvcBuilder.AddComponent( TypeOf( CComponentBindFields ) ); // 不增加这个组件，FromElement还需要增加ViewModel装饰
         mvcBuilder.AddComponentBindActionsJquery();
         this.OnConfigureMVC( mvcBuilder );
         mvcBuilder.Build();

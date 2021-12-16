@@ -55,6 +55,7 @@ function createWindow(): void {
         //     preload: path.join(__dirname, 'preload.js'),
         // },
         width: 800,
+        
         webPreferences: {
             // 下面两个字段解决require not defined
             nodeIntegration: true,

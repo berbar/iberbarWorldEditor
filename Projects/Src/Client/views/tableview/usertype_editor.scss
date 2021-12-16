@@ -1,0 +1,53 @@
+
+
+.usertype-editor
+{
+    .rows-layout
+    {
+        .row
+        {
+            padding: 4px 0px;
+            margin: 0px 4px;
+            border-bottom: 1px solid black;
+            display: flex;
+            flex-direction: row;
+            .field-key-and-name
+            {
+                width: 200px;
+                text-align: right;
+
+                p
+                {
+                    display: inline;
+                }
+
+                #pname
+                {
+                    font-weight: bold;
+                }
+
+                #pkey
+                {
+                    font-style: italic;
+                    margin-left: 4px;
+                    font-size: 12px;
+                }
+            }
+
+            .field-comment
+            {
+                width: 400px;
+                text-align: left;
+                padding: 0px 32px;
+                font-size: 14px;
+            }
+
+            .field-edit
+            {
+                width: 0;
+                flex: 1;
+                padding: 0px 4px;
+            }
+        }
+    }
+}

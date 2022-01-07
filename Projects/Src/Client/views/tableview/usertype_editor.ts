@@ -6,10 +6,21 @@ import style from "./usertype_editor.scss";
 export class CFieldBinding
 {
     protected m_fieldInfo: modUserTypeDefinitions.UStructField = null;
+    protected m_elementRow: JQuery = null;
 
     public SetField( fieldInfo: modUserTypeDefinitions.UStructField ): void
     {
         this.m_fieldInfo = fieldInfo;
+    }
+
+    public GetField(): modUserTypeDefinitions.UStructField
+    {
+        return this.m_fieldInfo;
+    }
+
+    public SetElement( element: JQuery ): void
+    {
+        this.m_elementRow = element;
     }
 
     public ReturnHTML(): string
@@ -40,7 +51,13 @@ export class CFieldBinding
                 <div class="${style.comment}">
                     <textarea rows="4">${this.m_fieldInfo.Comment}</textarea>
                 </div>
-                <div class="${style.exts}"></div>
+                <div class="${style.exts}">
+                    <div class="${style.arrayElement}">
+                        <input id="${style.elementCheck}" type="checkbox"/>
+                        <p>数组</p>
+                        <input id="${style.elementCount}" type="number"/>
+                    </div>
+                </div>
             </div>
         `;
     }
@@ -74,8 +91,10 @@ export class CView extends iberbar.MVC.CView
 
         this.m_fieldBindings = [];
 
+        const fieldCount = structInfo.Fields.length;
+
         let strHtmlForFields = "";
-        for ( let i = 0, s = structInfo.Fields.length; i < s; i ++ )
+        for ( let i = 0; i < fieldCount; i ++ )
         {
             let field = structInfo.Fields[ i ];
             let binding = new CFieldBinding();
@@ -85,5 +104,12 @@ export class CView extends iberbar.MVC.CView
         }
 
         this.m_element_RowsLayout.append( strHtmlForFields );
+
+        for ( let i = 0; i < fieldCount; i ++ )
+        {
+            let binding = this.m_fieldBindings[i];
+            binding.SetElement( this.m_element_RowsLayout.find( `.${style.row}#${binding.GetField().Key}` ) );
+        }
+        
     }
 };

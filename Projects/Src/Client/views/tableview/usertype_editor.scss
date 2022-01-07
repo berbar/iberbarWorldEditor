@@ -20,13 +20,16 @@
 
             >.key
             {
-                width: 200px;
+                width: 100px;
                 text-align: center;
             }
 
             >.name
             {
-                width: 200px;
+                input
+                {
+                    width: 120px;
+                }
                 text-align: center;
             }
 
@@ -45,7 +48,6 @@
 
             >.usertype
             {
-                width: 200px;
                 select
                 {
                     padding: 4px;
@@ -58,6 +60,27 @@
                 width: 0;
                 flex: 1;
                 padding: 0px 4px;
+
+                >.array-element
+                {
+                    p
+                    {
+                        display: inline;
+                    }
+                    input
+                    {
+                        
+                        &#element-check
+                        {
+                            display: inline;
+                        }
+                        &#element-count
+                        {
+                            display: inline-block;
+                            width: 80px;
+                        }
+                    }
+                }
             }
         }
     }

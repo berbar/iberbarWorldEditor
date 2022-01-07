@@ -60,7 +60,8 @@ function createWindow(): void {
             // 下面两个字段解决require not defined
             nodeIntegration: true,
             contextIsolation: false
-        }
+        },
+        backgroundColor: "transparent"
     });
     mainWindow.maximize();
     // and load the index.html of the app.

@@ -8,6 +8,9 @@ interface Style
     comment: string;
     usertype: string;
     exts: string;
+    arrayElement: string;
+    elementCheck: string;
+    elementCount: string;
 }
 declare const esModuleStyle: Style;
 export default esModuleStyle;

@@ -14,8 +14,10 @@ export enum UBaseDataType
 
 export type UStructField =
 {
-    Type: UBaseDataType;
+    Key: string;
+    Name: string;
     Comment: string;
+    Type: UBaseDataType;
     Database?: string;
     Elements?: number;
 };
@@ -24,11 +26,12 @@ export type UStruct =
 {
     Extends: string;
     Comment: string;
-    Fields: { [ key: string]: UStructField };
+    Fields: UStructField[];
 };
 
 export type UEnumField =
 {
+    Key: string;
     Name: string;
     Comment: string;
     Value: number | string;
@@ -38,7 +41,7 @@ export type UEnum =
 {
     Name: string;
     Comment: string;
-    Fields: { [ key: string]: UEnumField };
+    Fields: UEnumField[];
 };
 
 

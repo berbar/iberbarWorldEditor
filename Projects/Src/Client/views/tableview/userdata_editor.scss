@@ -11,39 +11,38 @@
             border-bottom: 1px solid black;
             display: flex;
             flex-direction: row;
-
-            font-size: 12px;
-            input
-            {
-                font-size: 12px;
-            }
-
-            >.key
+            .field-key-and-name
             {
                 width: 200px;
-                text-align: center;
-            }
+                text-align: right;
 
-            >.name
-            {
-                width: 200px;
-                text-align: center;
-            }
-
-            >.comment
-            {
-                textarea
+                p
                 {
-                    width: 400px;
-                    padding: 4px;
-                    //font-size: 12px;
-                    line-height: 1.2;
-                    resize: none;
+                    display: inline;
                 }
 
+                #pname
+                {
+                    font-weight: bold;
+                }
+
+                #pkey
+                {
+                    font-style: italic;
+                    margin-left: 4px;
+                    font-size: 12px;
+                }
             }
 
-            >.usertype
+            .field-comment
+            {
+                width: 400px;
+                text-align: left;
+                padding: 0px 32px;
+                font-size: 14px;
+            }
+
+            .field-usertype
             {
                 width: 200px;
                 select
@@ -53,7 +52,7 @@
                 }
             }
 
-            >.exts
+            .field-edit
             {
                 width: 0;
                 flex: 1;

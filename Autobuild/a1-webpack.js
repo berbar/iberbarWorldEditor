@@ -62,6 +62,10 @@ var webpack_conf = {
                       }
                     },
                     'sass-loader' // compiles Sass to CSS
+                    // {
+                    //     loader: "sass-loader",
+                    //     options: {sass: require("dart-sass")}
+                    //   }
                 ]
             },
             // 整合js文件

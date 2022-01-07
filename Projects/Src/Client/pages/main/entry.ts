@@ -3,6 +3,7 @@ import { CApplication, CMainContentAbstract, CreateViewOnBody } from "views/appl
 import { CFileTabView } from "views/tabview";
 import * as modUserTypeEditor from "views/tableview/usertype_editor";
 //import * as style from "./filetab.scss";
+import * as modDataTypeDefinitions from "common/data_type_definitions";
 import { CMainView } from "./main_view";
 
 import "styles/global.scss";
@@ -27,23 +28,24 @@ class CMainApplication extends CApplication
     {
         super.OnLoaded();
 
-        let rowOptionsList: modUserTypeEditor.URowOptions[] = [
-            {
-                key: "field_1",
-                name: "字段1",
-                comment: `
-asset js/main/index.js 110 KiB [emitted] (name: main) 1 related asset
-asset js/test/index.js 24.7 KiB [emitted] (name: test) 1 related asset
-cached modules 69.1 KiB (javascript) 937 bytes (runtime) [cached] 33 modules
-                `,
-                editType: modUserTypeEditor.URowEditType.Text,
-                exts: {
-                    text: "hahahaha"
+        let struct: modDataTypeDefinitions.UStruct = {
+            Extends: null,
+            Comment: "",
+            Fields: [
+                {
+                    Key: "field_1",
+                    Name: "字段1",
+                    Comment: `
+    asset js/main/index.js 110 KiB [emitted] (name: main) 1 related asset
+    asset js/test/index.js 24.7 KiB [emitted] (name: test) 1 related asset
+    cached modules 69.1 KiB (javascript) 937 bytes (runtime) [cached] 33 modules
+                    `,
+                    Type: modDataTypeDefinitions.UBaseDataType.String,
                 }
-            }
-        ];
+            ]
+        };
         let editor = this.m_lifetimeScope.Resolve( TypeOf( modUserTypeEditor.CView ) );
-        editor.SetRowOptionsList(rowOptionsList);
+        editor.SetStruct(struct);
     }
 }
 

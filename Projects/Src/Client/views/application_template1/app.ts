@@ -7,6 +7,7 @@ import { gBodyContentElement, CreateViewOnBody } from "views/application_mvc2";
 // import { CLeftMenusView } from "./v_leftmenu";
 // // import * as modXhrAccount from "ajax/account";
 // import { CWaitingView } from "views/waiting";
+import * as modCommunications from "communication";
 
 export class CApplication extends CApplicationBase
 {
@@ -14,7 +15,7 @@ export class CApplication extends CApplicationBase
     {
         super.OnConfigureIoc( cb );
 
-        //this.RegisterXhrControllerType( cb, TypeOf( modXhrAccount.Controllers.CUserController ) );
+        modCommunications.RegisterAll( cb );
     }
 
     protected OnConfigureMVC( mvc: iberbar.MVC.CBuilder ): void
@@ -42,6 +43,8 @@ export class CApplication extends CApplicationBase
         $("body").css( "height", "100%" );
         gBodyContentElement.css( "height", "100%" );
         this.m_lifetimeScope.Resolve( TypeOf( CMainView ) );
+
+        
     }
 };
 

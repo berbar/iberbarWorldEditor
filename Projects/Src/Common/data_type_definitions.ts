@@ -60,3 +60,6 @@ export enum UDataDefinitionType
     Struct,
     Database
 };
+
+
+export type UUsertype = UStruct | UEnum;

@@ -2,6 +2,5 @@
     "extends": "./tsconfig.json",
     "compilerOptions": {
         "outDir": "../Client/common",
-    },
-    "include": [ "./*.ts", "./communication" ]
+    }
 }

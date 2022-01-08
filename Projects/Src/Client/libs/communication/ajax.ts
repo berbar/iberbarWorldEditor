@@ -1,33 +1,43 @@
 
-import * as modRequestBase from "./request";
-import { ipcRenderer } from "electron";
+import { URequestResponse } from "./base";
+import { IRequest } from "./request";
 
-export { URequestResponse, URequestResponseExts, UCallbackSuccess, UCallbackFailure } from "./request";
+export { URequestResponse, URequestResponseExts, UCallbackSuccess, UCallbackFailure } from "./base";
 
 
 type UHttpOptions =
 {
+    $RequestTypeInjection?: typeof IRequest
+    $HttpMethod?: "GET" | "POST";
     $Route?: string,
-    $HttpController?: string,
+    $ControllerName?: string,
     $HttpHost?: string,
     $HttpArea?: string,
     $HttpAction?: string,
     $HttpTimeout?: number,
     $HttpLog?: boolean,
-    $HttpLogFormatSuccess?: ( request: modRequestBase.IRequest, response: modRequestBase.URequestResponse ) => void,
-    $HttpLogFormatFailure?: ( request: modRequestBase.IRequest, errCode: number, errText: string ) => void,
+    $HttpLogFormatSuccess?: ( request: IRequest, response: URequestResponse ) => void,
+    $HttpLogFormatFailure?: ( request: IRequest, errCode: number, errText: string ) => void,
+    $RequestContext?: () => IRequest;
+    $RequestPrevSend?: ( request: IRequest ) => void;
 }
 
 // HTTP控制器请求方法类型
 type UHttpFunction = Function & UHttpOptions;
 
 
-// HTTP控制器父类
-export class CControllerCore
+
+export class CController
 {
+    protected m_request: IRequest = null;
 
+    @DeclaringType( TypeOf( IRequest ) )
+    protected set Request( req: IRequest )
+    {
+        this.m_request = req;
+    }
 
-    public Execute( method: UHttpFunction, ...args: any[] )
+    protected Execute( method: UHttpFunction, ...args: any[] )
     {
         let constructor: UHttpFunction = this["__proto__"]["constructor"];
 
@@ -43,10 +53,17 @@ export class CControllerCore
         // const controllerName = match[ 1 ];
 
         // 通过ApiController修饰绑定控制器名字
-        let controllerName: string = constructor.$HttpController;
+        let controllerName: string = constructor.$ControllerName;
         if ( controllerName == null )
         {
             console.error( "It's not a standard controller." );
+            return;
+        }
+
+        // 分配request接口
+        if ( this.m_request == null )
+        {
+            console.error( `No implement for IRequest. Do you forgot to register controller<${controllerName}> into ioc? Or use new instead of resolving? Or set PropertiesAutowired? ` );
             return;
         }
 
@@ -106,7 +123,7 @@ export class CControllerCore
         this.m_request.url = url;
         if ( method.$HttpLog )
         {
-            this.m_request.SuccessCallbacks.Add( new iberbar.System.TCallback( function( this: modRequestBase.IRequest, response )
+            this.m_request.SuccessCallbacks.Add( new iberbar.System.TCallback( function( this: IRequest, response )
             {
                 let logText = method.$HttpLogFormatSuccess( this, response );
                 if ( response.code < 0 )
@@ -114,7 +131,7 @@ export class CControllerCore
                 else
                     console.info( logText );
             }, this ));
-            this.m_request.FailureCallbacks.Add( new iberbar.System.TCallback( function( this: modRequestBase.IRequest, errCode, errText )
+            this.m_request.FailureCallbacks.Add( new iberbar.System.TCallback( function( this: IRequest, errCode, errText )
             {
                 console.error( method.$HttpLogFormatFailure( this, errCode, errText ) );
             }, this ) );
@@ -122,29 +139,63 @@ export class CControllerCore
         method.apply( this, args );
 
         // 通用处理PostData数据
-        this.__CommonFixRequest();
-        // if ( this.m_request.contentType == "application/json" )
-        //     this.m_request.data = JSON.stringify( this.m_request.data );
+        if ( constructor.$RequestPrevSend )
+        {
+            constructor.$RequestPrevSend( this.m_request );
+        }
+        if ( method.$RequestPrevSend )
+        {
+            constructor.$RequestPrevSend( this.m_request );
+        }
 
         // 发送请求
         this.m_request.Send();
     }
-
-    protected __CommonFixRequest()
-    {
-    }
-
-    protected static Readonly()
-    {
-        // readonly修饰函数，对方法进行只读操作
-        return function ( target, methodName, descriptor: PropertyDescriptor )
-        {
-            descriptor.writable = false;
-            return descriptor;
-        }
-    }
 };
 
+
+
+
+
+export function ResolveRequestContext( how: () => IRequest ): iberbar.System.UDecoratorFunctionType_ForClass
+{
+    return null
+}
+
+
+export type UHttpMethodType = "GET" | "POST";
+
+
+/**
+ * 修饰器 - HTTP请求，带有该修饰器的方法将被重载，用于执行HTTP请求
+ * @param http_method 
+ */
+export function Http( httpMethod: UHttpMethodType ): iberbar.System.UDecoratorFunctionType_ForMethod
+{
+    return function (target: any, methodName: string, descriptor: PropertyDescriptor)
+    {
+        let methodOld = descriptor.value;
+        methodOld.$HttpMethod = httpMethod;
+        if ( methodOld.$HttpAction == null )
+            methodOld.$HttpAction = methodName;
+            
+        descriptor.value = function( ...args: any[] )
+        {
+            this.Execute( methodOld, ...args );
+        }
+
+        return descriptor;
+    }
+}
+
+
+/**
+ * 修饰器 - HTTP POST请求，带有该修饰器的方法将被重载，用于执行HTTP请求
+ */
+export function HttpPost()
+{
+    return Http( "POST" );
+}
 
 
 /**
@@ -192,7 +243,7 @@ export function ApiController( controllerName: string )
 {
     return function( target: any )
     {
-        (<UHttpFunction>target).$HttpController = controllerName;
+        (<UHttpFunction>target).$ControllerName = controllerName;
     }
 }
 
@@ -243,10 +294,10 @@ export function RouteGet( target: any, propertyKey?: string ): string
  */
 export function HttpLog(
     enable: boolean = true,
-    formatSuccess?: ( request: modRequestBase.IRequest, response: modRequestBase.URequestResponse ) => string,
-    formatFailure?: ( request: modRequestBase.IRequest, errCode: number, errText: string ) => string )
+    formatSuccess?: ( request: IRequest, response: URequestResponse ) => string,
+    formatFailure?: ( request: IRequest, errCode: number, errText: string ) => string )
 {
-    function __DefaultSuccess( request: modRequestBase.IRequest, response: modRequestBase.URequestResponse ): string
+    function __DefaultSuccess( request: IRequest, response: URequestResponse ): string
     {
         if ( response.code < 0 )
             console.warn( "Controller.Execute Success:\nurl=%s,\nresponse=%O", request.url, response );
@@ -255,7 +306,7 @@ export function HttpLog(
         return ;
     }
 
-    function __DefaultFailure( request: modRequestBase.IRequest, errCode: number, errText: string )
+    function __DefaultFailure( request: IRequest, errCode: number, errText: string )
     {
         return console.error( "Controller.Execute Failure:\nurl=%s,\nerrCode=%d,\nerrText=%s", request.url, errCode, errText );
     }
@@ -283,6 +334,26 @@ export function Timeout( timeout: number )
     {
         descriptor.value.$HttpTimeout = timeout;
         return descriptor;
+    }
+}
+
+
+/**
+ * 修饰器 - 注入Request实现类型
+ * @param type 
+ */
+export function RequestTypeInjection( type: typeof IRequest )
+{
+    return function( target, method?: string, descriptor?: PropertyDescriptor )
+    {
+        if ( descriptor == null )
+        {
+            (<UHttpFunction>target).$RequestTypeInjection = type;
+        }
+        else
+        {
+            (<UHttpFunction>descriptor.value).$RequestTypeInjection = type;
+        }
     }
 }
 

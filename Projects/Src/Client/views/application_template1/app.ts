@@ -7,15 +7,12 @@ import { gBodyContentElement, CreateViewOnBody } from "views/application_mvc2";
 // import { CLeftMenusView } from "./v_leftmenu";
 // // import * as modXhrAccount from "ajax/account";
 // import { CWaitingView } from "views/waiting";
-import * as modCommunications from "communication";
 
 export class CApplication extends CApplicationBase
 {
     protected OnConfigureIoc( cb: iberbar.Autofac.CContainerBuilder ): void
     {
         super.OnConfigureIoc( cb );
-
-        modCommunications.RegisterAll( cb );
     }
 
     protected OnConfigureMVC( mvc: iberbar.MVC.CBuilder ): void

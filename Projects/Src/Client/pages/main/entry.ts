@@ -4,6 +4,7 @@ import { CFileTabView } from "views/tabview";
 import * as modUserTypeEditor from "views/tableview/usertype_editor";
 //import * as style from "./filetab.scss";
 import * as modDataTypeDefinitions from "common/data_type_definitions";
+import * as modCommunications from "communication";
 import { CMainView } from "./main_view";
 
 import "styles/global.scss";
@@ -14,6 +15,8 @@ class CMainApplication extends CApplication
     protected OnConfigureIoc(cb: iberbar.Autofac.CContainerBuilder): void
     {
         super.OnConfigureIoc( cb );
+
+        modCommunications.RegisterAll( cb );
     }
 
     protected OnConfigureMVC( mvc: iberbar.MVC.CBuilder ): void

@@ -1,17 +1,17 @@
 
 import { UUsertype } from "common/data_type_definitions";
-import { ActionName, ApiController, Area, CController, HostName, HttpPost, UCallbackFailure, UCallbackSuccess } from "libs/communication/ajax";
+import { ActionName, ApiController, Area, CController, HostName, HttpGet, HttpPost, UCallbackFailure, UCallbackSuccess } from "libs/communication/ajax";
 import { IController_Usertype } from "../base/usertype";
 
 
 
-@HostName( "" )
+@HostName( "https://localhost:7066" )
 @Area( "[controller]/[action]" )
-@ApiController("Usertype")
+@ApiController("weatherforecast")
 export class CController_Usertype extends CController implements IController_Usertype
 {
-    @HttpPost()
-    @ActionName("GetUsertypes")
+    @HttpGet()
+    @ActionName("Get")
     public GetUsertypes(success: UCallbackSuccess<UUsertype[]>, failure: UCallbackFailure): void
     {
     }

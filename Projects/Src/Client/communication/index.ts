@@ -45,7 +45,7 @@ function RegisterControllerTypes( cb: iberbar.Autofac.CContainerBuilder, assembl
     let baseTypeIpc = TypeOf( CIpcController );
     for ( let assembly of assemblies )
     {
-        let controllerTypes = assembly.GetTypes().Where( ( exportType )=>
+        let controllerTypes = assembly.GetTypes().where( ( exportType )=>
         {
             if ( exportType.IsInheritFrom( baseTypeXhr ) == true || exportType.IsInheritFrom( baseTypeIpc ) )
                 return true;
@@ -64,7 +64,7 @@ export class CControllerManager
     protected m_ioc: iberbar.Autofac.IContainer;
 
     public constructor(
-        @iberbar.Autofac.InjectionProvider()
+        @iberbar.Autofac.InjectLifetimeScope()
         ioc: iberbar.Autofac.IContainer )
     {
         this.m_ioc = ioc;
@@ -86,7 +86,7 @@ export class CControllerManager
         let baseTypeIpc = TypeOf( CIpcController );
         for ( let assembly of assemblies )
         {
-            let controllerTypes = assembly.GetTypes().Where( ( exportType )=>
+            let controllerTypes = assembly.GetTypes().where( ( exportType )=>
             {
                 if ( exportType.IsInheritFrom( baseTypeXhr ) == true || exportType.IsInheritFrom( baseTypeIpc ) )
                     return true;

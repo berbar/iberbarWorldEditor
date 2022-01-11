@@ -199,6 +199,15 @@ export function HttpPost()
 
 
 /**
+ * 修饰器 - HTTP GET 请求，带有该修饰器的方法将被重载，用于执行HTTP请求
+ */
+ export function HttpGet()
+ {
+     return Http( "GET" );
+ }
+
+
+/**
  * 修饰器 - 重置请求的地址，默认地址为 /api/[controller]/[action]
  * 
  * 可正则替换[area]、[controller]和[action]

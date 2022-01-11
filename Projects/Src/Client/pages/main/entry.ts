@@ -49,6 +49,9 @@ class CMainApplication extends CApplication
         };
         let editor = this.m_lifetimeScope.Resolve( TypeOf( modUserTypeEditor.CView ) );
         editor.SetStruct(struct);
+
+        let manager = this.m_lifetimeScope.Resolve( TypeOf( modCommunications.CControllerManager ) );
+        manager.Usertype.GetUsertypes(null, null);
     }
 }
 

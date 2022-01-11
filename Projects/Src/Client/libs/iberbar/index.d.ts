@@ -457,14 +457,14 @@ declare namespace iberbar.System {
 }
 declare interface Array<T> {
     FirstOrDefault(predicate?: (e: T, index: number) => boolean): T;
-    Where(predicate: (e: T, index: number) => boolean): Array<T>;
+    where(predicate: (e: T, index: number) => boolean): Array<T>;
     RemoveAt(index: number): Array<T>;
     Remove<T>(element: T): Array<T>;
     RemoveWhere<T>(predicate: (e: T, index: number) => boolean): Array<T>;
 }
 declare interface ReadonlyArray<T> {
     FirstOrDefault(predicate?: (e: T, index: number) => boolean): T;
-    Where(predicate: (e: T, index: number) => boolean): Array<T>;
+    where(predicate: (e: T, index: number) => boolean): Array<T>;
     SafeForEach(func: (e: T, index: number) => boolean): void;
 }
 interface ArrayConstructor {

@@ -9,5 +9,5 @@
             "./libs",
             "./node_modules/@types"
         ]
-    },
+    }
 }

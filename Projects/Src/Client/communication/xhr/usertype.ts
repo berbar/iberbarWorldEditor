@@ -4,7 +4,7 @@ import { ActionName, ApiController, Area, CController, HostName, HttpGet, HttpPo
 import { IController_Usertype } from "../base/usertype";
 
 
-
+@iberbar.System.Reflection.TypeNickname( "CController_Usertype" )
 @HostName( "https://localhost:7066" )
 @Area( "[controller]/[action]" )
 @ApiController("weatherforecast")

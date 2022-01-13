@@ -5,6 +5,8 @@ import * as modIpcUsertype from "./ipc/usertype";
 import { IController_Usertype } from "./base/usertype";
 import { CController as CXhrController } from "libs/communication/ajax";
 import { CController as CIpcController } from "libs/communication/ipc";
+import { CRequest } from "libs/communication/request_jquery";
+import { IRequest } from "libs/communication/request";
 
 
 
@@ -70,12 +72,13 @@ export class CControllerManager
         this.m_ioc = ioc;
     }
 
-    protected m_usertype: iberbar.System.Reflection.CType<IController_Usertype>;
+    @iberbar.System.Reflection.Enumerable
+    protected m_Controller_Usertype: iberbar.System.Reflection.CType<IController_Usertype>;
     public get Usertype(): IController_Usertype
     {
-        if ( this.m_usertype == null )
+        if ( this.m_Controller_Usertype == null )
             return null;
-        return this.m_ioc.Resolve( this.m_usertype );
+        return this.m_ioc.Resolve( this.m_Controller_Usertype );
     }
 
     public SwitchMode( mode: "local" | "remote" ): void
@@ -94,11 +97,17 @@ export class CControllerManager
             });
             for ( let ct of controllerTypes )
             {
-                let constructor = ct.GetConstructor();
-                let propertyInfo = typeInfo.GetProperty( (<any>constructor.JsConstructor).$ControllerName );
-                if ( propertyInfo != null && propertyInfo.CanWrite == true )
+                let nickname = ct.GetNickname();
+                if ( nickname == null || nickname.length == 0 )
+                    continue;
+                if ( nickname.startsWith( "CController_" ) )
                 {
-                    propertyInfo.SetValue( this, ct );
+                    nickname = nickname.substring( 1 );
+                }
+                let fieldInfo = typeInfo.GetOwnFieldOne( "m_" + nickname );
+                if ( fieldInfo != null )
+                {
+                    fieldInfo.SetValue( this, ct )
                 }
             }
         }
@@ -112,11 +121,15 @@ export class CControllerManager
  * @param cb 
  * @param mode local本地模式，remote远程模式
  */
-export function RegisterAll( cb: iberbar.Autofac.CContainerBuilder ): void
+export function RegisterAll( cb: iberbar.Autofac.CContainerBuilder, initMode: "local" | "remote" ): void
 {
     let assemblies = GetAssemblies();
     RegisterControllerTypes( cb, assemblies );
-    cb.RegisterType( TypeOf( CControllerManager ) ).SingleInstance();
+    cb.RegisterType( TypeOf( CControllerManager ) ).SingleInstance().OnActivating( function( i )
+    {
+        i.Instance.SwitchMode( initMode );
+    });
+    cb.RegisterType( TypeOf( CRequest ) ).AsSelf().As( TypeOf( IRequest ) ).InstancePerDependency();
 }
 
 

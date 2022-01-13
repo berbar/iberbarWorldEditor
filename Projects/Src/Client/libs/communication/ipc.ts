@@ -1,6 +1,7 @@
 
 import * as modRequestBase from "./base";
 import { ipcRenderer } from "electron";
+import { UIpcRequest } from "common/ipc_request";
 
 export { URequestResponse, URequestResponseExts, UCallbackSuccess, UCallbackFailure } from "./base";
 
@@ -24,8 +25,64 @@ type UExecuteFunction = Function & UOptions;
 
 export interface IIpcContext
 {
-    data?: any[];
+    data?: any;
+    get SuccessCallbacks(): any;
+    get FailureCallbacks(): any;
 }
+
+
+export class CIpcChannelManager
+{
+    protected m_request_id = 0;
+
+    protected m_callbacks: { [ id: string ]: iberbar.System.TCallback<any> } = {}
+
+    protected m_channels: { [ name: string ]: any } = {}
+
+    protected AllocateRequestId(): number
+    {
+        this.m_request_id ++;
+        return this.m_request_id;
+    }
+
+    public Listen( channel: string ): void
+    {
+        if ( this.m_channels[ channel ] == null )
+        {
+            ipcRenderer.on( channel, this.OnCommonCallback );
+            this.m_channels[ channel ] = { on: true }
+        }
+    }
+
+    public Send( channel: string, callback: iberbar.System.TCallback<any>, ...args: any[] ): void
+    {
+        let requestInfo: UIpcRequest = {
+            id: this.AllocateRequestId().toString(),
+        };
+        if ( callback != null )
+        {
+            this.m_callbacks[ requestInfo.id ] = callback;
+        }
+        ipcRenderer.send( channel, requestInfo, ...args );
+    }
+
+    protected OnCommonCallback( evt: Electron.IpcRendererEvent, request: UIpcRequest, ...args: any[] )
+    {
+        let callback = this.m_callbacks[ request.id ];
+        if ( callback == null )
+            return;
+        callback.Execute( ...args );
+        delete this.m_callbacks[ request.id ];
+    }
+
+    protected static sm_instance = new CIpcChannelManager();
+    public static sGetInstance()
+    {
+        return this.sm_instance;
+    }
+};
+
+
 
 
 export class CController
@@ -87,14 +144,9 @@ export class CController
         //     constructor.$RequestPrevSend( request );
         // }
     
-        if ( this.m_request.data == null )
-        {
-            ipcRenderer.send( channel, path );
-        }
-        else
-        {
-            ipcRenderer.send( channel, path, ...this.m_request.data );
-        }
+        CIpcChannelManager.sGetInstance().Send( channel, new iberbar.System.TCallback( function( response: any ) {
+            
+        }, this ), path, this.m_request.data );
     }
 };
 
@@ -127,6 +179,7 @@ export function ChannelName( channel: string )
         {
             (<UExecuteFunction>descriptor.value).$Channel = channel;
         }
+        CIpcChannelManager.sGetInstance().Listen( channel );
     }
 }
 

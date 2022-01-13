@@ -11,6 +11,6 @@ export class CController_Usertype extends CController implements IController_Use
     @ActionName( "GetUsertypes" )
     public GetUsertypes(success: UCallbackSuccess<UUsertype[]>, failure: UCallbackFailure): void
     {
-        this.m_request.data = [ "sss" ]
+        this.m_request.data = "sss"
     }
 };

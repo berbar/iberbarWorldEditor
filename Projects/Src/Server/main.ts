@@ -6,6 +6,7 @@ import * as modParser from "./parser";
 import { UDataDefinitionType } from './common/data_type_definitions';
 import { Register } from './ipc_channel';
 import { CIpcChannelManager } from './ipc_channel/manager';
+import { UIpcRequest } from './common/ipc_request';
 console.log( iberbar.System );
 console.log(n);
 
@@ -31,17 +32,31 @@ Main();
 
 
 
-// ipcMain.on( "hello", function( evt, ...args )
-// {
-//     console.log( args[0] );
-//     evt.sender.send( "hello", "lucy" );
+ipcMain.on( "default", function( evt, request: UIpcRequest, url, ...args )
+{
+    console.log( request );
+    console.log( url );
+    console.log( args );
+    // evt.sender.send( "hello", "lucy" );
 
-//     //modParser.SaveType( {Name:"haha"}, workspace, UDataDefinitionType.Enum, "haha", { "format": "json" } );
-//     let enumFileText = modParser.ReadType( workspace, UDataDefinitionType.Enum, "haha" );
-//     console.log( enumFileText );
-//     let enums = modParser.ReadTypeList( workspace, UDataDefinitionType.Enum )
-//     console.log( enums );
-// });
+    // //modParser.SaveType( {Name:"haha"}, workspace, UDataDefinitionType.Enum, "haha", { "format": "json" } );
+    // let enumFileText = modParser.ReadType( workspace, UDataDefinitionType.Enum, "haha" );
+    // console.log( enumFileText );
+    // let enums = modParser.ReadTypeList( workspace, UDataDefinitionType.Enum )
+    // console.log( enums );
+});
+ipcMain.on( "default", function( evt, action, ...args )
+{
+    console.log( action );
+    console.log( args );
+    // evt.sender.send( "hello", "lucy" );
+
+    // //modParser.SaveType( {Name:"haha"}, workspace, UDataDefinitionType.Enum, "haha", { "format": "json" } );
+    // let enumFileText = modParser.ReadType( workspace, UDataDefinitionType.Enum, "haha" );
+    // console.log( enumFileText );
+    // let enums = modParser.ReadTypeList( workspace, UDataDefinitionType.Enum )
+    // console.log( enums );
+});
 
 let mainWindow: Electron.BrowserWindow;
 /**

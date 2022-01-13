@@ -23,12 +23,49 @@ type UOptions =
 // HTTP控制器请求方法类型
 type UExecuteFunction = Function & UOptions;
 
-export interface IIpcContext
+export class CIpcContext
 {
+    /**
+     * 请求地址
+     */
+    url: string;
+
+    /**
+     * 额外数据，多用于post
+     */
     data?: any;
-    get SuccessCallbacks(): any;
-    get FailureCallbacks(): any;
-}
+
+    /**
+     * 请求成功回调容器
+     */
+    protected m_successCallbacks = new iberbar.System.TCallbackArray< modRequestBase.UCallbackSuccessFunction >();
+    protected m_failureCallbacks = new iberbar.System.TCallbackArray< modRequestBase.UCallbackFailureFunction >();
+
+    //public abstract SendAsync(): Promise<void>;
+
+    public get SuccessCallbacks()
+    {
+        return this.m_successCallbacks;
+    }
+
+    public get FailureCallbacks()
+    {
+        return this.m_failureCallbacks;
+    }
+
+    public DoSuccess( response: any )
+    {
+        this.m_successCallbacks.Execute( response );
+    }
+
+    public DoFailure( errCode: number, errText: string )
+    {
+        this.m_failureCallbacks.Execute( errCode, errText );
+    }
+};
+
+
+
 
 
 export class CIpcChannelManager
@@ -87,7 +124,7 @@ export class CIpcChannelManager
 
 export class CController
 {
-    protected m_request: IIpcContext = {}
+    protected m_request: CIpcContext = new CIpcContext();
 
     protected Execute( method: UExecuteFunction, ...args: any[] )
     {
@@ -116,6 +153,7 @@ export class CController
         //path = `${controllerName}/${actionName}`;
         path = actionName;
     
+        this.m_request.url = path;
         this.m_request.data = undefined;
         // if ( method.$Log )
         // {
@@ -144,8 +182,8 @@ export class CController
         //     constructor.$RequestPrevSend( request );
         // }
     
-        CIpcChannelManager.sGetInstance().Send( channel, new iberbar.System.TCallback( function( response: any ) {
-            
+        CIpcChannelManager.sGetInstance().Send( channel, new iberbar.System.TCallback( function( this: CController, response: any ) {
+            this.m_request.DoSuccess( response );
         }, this ), path, this.m_request.data );
     }
 };

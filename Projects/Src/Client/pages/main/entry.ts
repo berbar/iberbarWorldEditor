@@ -16,7 +16,7 @@ class CMainApplication extends CApplication
     {
         super.OnConfigureIoc( cb );
 
-        modCommunications.RegisterAll( cb );
+        modCommunications.RegisterAll( cb, "local" );
     }
 
     protected OnConfigureMVC( mvc: iberbar.MVC.CBuilder ): void

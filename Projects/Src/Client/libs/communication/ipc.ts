@@ -24,12 +24,13 @@ type UExecuteFunction = Function & UOptions;
 
 export interface IIpcContext
 {
-    data?: any;
+    data?: any[];
 }
 
 
 export class CController
 {
+    protected m_request: IIpcContext = {}
 
     protected Execute( method: UExecuteFunction, ...args: any[] )
     {
@@ -43,29 +44,22 @@ export class CController
         }
     
         // 通过ApiController修饰绑定控制器名字
-        let controllerName: string = constructor.$Controller;
-        if ( controllerName == null )
-        {
-            console.error( "It's not a standard controller." );
-            return;
-        }
+        // let controllerName: string = constructor.$Controller;
+        // if ( controllerName == null )
+        // {
+        //     console.error( "It's not a standard controller." );
+        //     return;
+        // }
     
         
         let path = "";
-        let actionName = method.name;
-    
-        // 获取Action行为
-        if ( method.$Action != null )
-        {
-            actionName = method.$Action;
-        }
+        let actionName = method.$Action;
     
         // 更新Route路由
-        path = `${controllerName}/${actionName}`;
+        //path = `${controllerName}/${actionName}`;
+        path = actionName;
     
-        let request: IIpcContext = {};
-    
-        request.data = undefined;
+        this.m_request.data = undefined;
         // if ( method.$Log )
         // {
         //     request.SuccessCallbacks.Add( new iberbar.System.TCallback( function( this: IRequest, response )
@@ -93,7 +87,14 @@ export class CController
         //     constructor.$RequestPrevSend( request );
         // }
     
-        ipcRenderer.send( channel, path, request.data );
+        if ( this.m_request.data == null )
+        {
+            ipcRenderer.send( channel, path );
+        }
+        else
+        {
+            ipcRenderer.send( channel, path, ...this.m_request.data );
+        }
     }
 };
 
@@ -187,8 +188,8 @@ export function IpcSender(): iberbar.System.UDecoratorFunctionType_ForMethod
     return  function (target: any, methodName: string, descriptor: PropertyDescriptor)
     {
         let methodOld = descriptor.value;
-        if ( methodOld.$HttpAction == null )
-            methodOld.$HttpAction = methodName;
+        if ( methodOld.$Action == null )
+            methodOld.$Action = methodName;
             
         descriptor.value = function( ...args: any[] )
         {

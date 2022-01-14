@@ -1,4 +1,5 @@
 
+import { UIpcRequest } from "../common/ipc_request";
 import iberbar from "../libs/iberbar";
 
 
@@ -37,4 +38,13 @@ export class CIpcChannelEventAttribute extends iberbar.System.CAttribute
 export function IpcChannelEvent( eventId: string ): iberbar.System.UDecoratorFunctionType_ForMethod
 {
     return iberbar.System.Attribute( new CIpcChannelEventAttribute( eventId ) );
+}
+
+
+export type UIpcEventContext<TData=any> =
+{
+    ipcEvent: Electron.IpcMainEvent;
+    request: UIpcRequest;
+    url: string;
+    data: TData
 }

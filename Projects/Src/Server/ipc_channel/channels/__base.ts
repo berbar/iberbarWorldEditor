@@ -1,18 +1,21 @@
 import * as Electron from "electron";
 import { UIpcRequest } from "../../common/ipc_request";
-import iberbar from "../../libs/iberbar";
+import iberbar, { TypeOf } from "../../libs/iberbar";
+import { CIpcChannelAttribute } from "../attributes";
 
 
-export class CBaseChannel
+
+
+
+export class CBaseIpcChannel
 {
 
     protected m_channel: string = null;
 
-    public constructor(
-        @iberbar.Autofac.WithName( "channel" )
-        channel: string )
+    public constructor()
     {
-        this.m_channel = channel;
+        let t = this.GetType();
+        let channelNameAttr = t.GetCustomAttributeOne( TypeOf( CIpcChannelAttribute ), false );
     }
 
     protected SendResponseSuccess( ipcEvent: Electron.IpcMainEvent, request: UIpcRequest, data?: any, exts?: any ): void

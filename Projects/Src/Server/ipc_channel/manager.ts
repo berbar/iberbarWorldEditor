@@ -3,14 +3,15 @@
 import { ipcMain, IpcMainEvent } from "electron";
 import { UIpcRequest } from "../common/ipc_request";
 import iberbar from "../libs/iberbar";
-import { CIpcChannelEventAttribute, CIpcChannelAttribute } from "./attributes";
+import { CIpcChannelEventAttribute, CIpcChannelAttribute, UIpcEventContext } from "./attributes";
+import { CBaseIpcChannel } from "./channels/__base";
 
 
 type UChannelNode =
 {
     name: string;
     type: iberbar.System.Reflection.CType;
-    instance: Object;
+    instance: CBaseIpcChannel;
     persistent: boolean;
     events: { [ key: string ]: iberbar.System.Reflection.CMethodInfo };
     listening: boolean;
@@ -71,7 +72,8 @@ export class CIpcChannelManager
                 continue;
             if ( channelNode.instance == null )
             {
-                channelNode.instance = this.m_ioc.Resolve( channelNode.type, new iberbar.Autofac.CNamedParameter( "channel", <any>name ) );
+                channelNode.instance = <CBaseIpcChannel>this.m_ioc.Resolve( channelNode.type );
+                channelNode.instance
             }
             this.ListenNode( channelNode );
         }
@@ -82,7 +84,7 @@ export class CIpcChannelManager
         let channelNode = this.m_channels[ name ];
         if ( channelNode.instance == null )
         {
-            channelNode.instance = this.m_ioc.Resolve( channelNode.type );
+            channelNode.instance = <CBaseIpcChannel>this.m_ioc.Resolve( channelNode.type );
         }
         this.ListenNode( channelNode );
     }
@@ -94,24 +96,36 @@ export class CIpcChannelManager
 
         if ( channelNode.persistent == true )
         {
-            ipcMain.on( channelNode.name, function( this: UChannelNode, event, request: UIpcRequest, url: string, ...args: any[] )
+            ipcMain.on( channelNode.name, function( this: UChannelNode, event, request: UIpcRequest, url: string, data: any )
             {
                 let handler = channelNode.events[ url ];
                 if ( handler != null )
                 {
-                    handler.Invoke( channelNode.instance, event, request, url, ...args );
+                    let context: UIpcEventContext = {
+                        ipcEvent: event,
+                        request: request,
+                        url: url,
+                        data: data
+                    };
+                    handler.Invoke( channelNode.instance, context );
                 }
             } );
         }
         else
         {
-            ipcMain.once( channelNode.name, function( this: UChannelNode, event, request: UIpcRequest, url: string, ...args: any[] )
+            ipcMain.once( channelNode.name, function( this: UChannelNode, event, request: UIpcRequest, url: string, data: any )
             {
                 channelNode.listening = false;
                 let handler = channelNode.events[ url ];
                 if ( handler != null )
                 {
-                    handler.Invoke( channelNode.instance, event, request, url, ...args );
+                    let context: UIpcEventContext = {
+                        ipcEvent: event,
+                        request: request,
+                        url: url,
+                        data: data
+                    };
+                    handler.Invoke( channelNode.instance, context );
                 }
             } );
         }

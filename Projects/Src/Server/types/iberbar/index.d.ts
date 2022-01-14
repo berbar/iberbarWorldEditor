@@ -28,21 +28,26 @@
 //   const Object: typeof Object & ObjectExtension
 // }
 
+//import iberbar from "../../libs/iberbar";
+
+/// <reference path="declare.d.ts" />
+
+
 
 interface Object
 {
-  GetType(): any;
+    GetType(): iberbar.System.Reflection.CType;
 }
 
 declare interface Array<T> {
-  firstOrDefault(predicate?: (e: T, index: number) => boolean): T;
-  where(predicate: (e: T, index: number) => boolean): Array<T>;
-  removeAt(index: number): Array<T>;
-  remove<T>(element: T): Array<T>;
-  removeWhere<T>(predicate: (e: T, index: number) => boolean): Array<T>;
+    firstOrDefault(predicate?: (e: T, index: number) => boolean): T;
+    where(predicate: (e: T, index: number) => boolean): Array<T>;
+    removeAt(index: number): Array<T>;
+    remove<T>(element: T): Array<T>;
+    removeWhere<T>(predicate: (e: T, index: number) => boolean): Array<T>;
 }
 declare interface ReadonlyArray<T> {
-  firstOrDefault(predicate?: (e: T, index: number) => boolean): T;
-  where(predicate: (e: T, index: number) => boolean): Array<T>;
-  safeForEach(func: (e: T, index: number) => boolean): void;
+    firstOrDefault(predicate?: (e: T, index: number) => boolean): T;
+    where(predicate: (e: T, index: number) => boolean): Array<T>;
+    safeForEach(func: (e: T, index: number) => boolean): void;
 }

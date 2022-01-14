@@ -7,6 +7,15 @@
         "outDir": "../../Dist",
         "sourceMap": true,
         "allowJs": true,
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "typeRoots": [
+            "./types"
+        ],
+        "types": [
+            "iberbar"
+        ],
+        // "lib": [
+        //     "es6"
+        // ]
     }
 }

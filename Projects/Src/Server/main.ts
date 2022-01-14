@@ -37,7 +37,10 @@ ipcMain.on( "default", function( evt, request: UIpcRequest, url, ...args )
     console.log( request );
     console.log( url );
     console.log( args );
-    // evt.sender.send( "hello", "lucy" );
+    evt.sender.send( "default", request, {
+        code: 0,
+        data: "ssss"
+    } );
 
     // //modParser.SaveType( {Name:"haha"}, workspace, UDataDefinitionType.Enum, "haha", { "format": "json" } );
     // let enumFileText = modParser.ReadType( workspace, UDataDefinitionType.Enum, "haha" );

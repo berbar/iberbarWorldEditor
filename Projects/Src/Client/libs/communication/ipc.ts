@@ -7,8 +7,8 @@ export { URequestResponse, URequestResponseExts, UCallbackSuccess, UCallbackFail
 
 
 
-type UFormatSuccess = ( channel: string, path: string, response: modRequestBase.URequestResponse ) => void;
-type UFormatFailure = ( channel: string, path: string, errCode: number, errText: string ) => void;
+type UFormatSuccess = ( channel: string, url: string, response: modRequestBase.URequestResponse ) => void;
+type UFormatFailure = ( channel: string, url: string, errCode: number, errText: string ) => void;
 
 type UOptions =
 {
@@ -25,6 +25,8 @@ type UExecuteFunction = Function & UOptions;
 
 export class CIpcContext
 {
+    channel: string;
+
     /**
      * 请求地址
      */
@@ -86,12 +88,12 @@ export class CIpcChannelManager
     {
         if ( this.m_channels[ channel ] == null )
         {
-            ipcRenderer.on( channel, this.OnCommonCallback );
+            ipcRenderer.on( channel, this.OnCommonCallback.bind( this ) );
             this.m_channels[ channel ] = { on: true }
         }
     }
 
-    public Send( channel: string, callback: iberbar.System.TCallback<any>, ...args: any[] ): void
+    public Send( channel: string, callback: iberbar.System.TCallback<( ...args: any[] )=>void>, ...args: any[] ): void
     {
         let requestInfo: UIpcRequest = {
             id: this.AllocateRequestId().toString(),
@@ -153,23 +155,24 @@ export class CController
         //path = `${controllerName}/${actionName}`;
         path = actionName;
     
+        this.m_request.channel = channel;
         this.m_request.url = path;
         this.m_request.data = undefined;
-        // if ( method.$Log )
-        // {
-        //     request.SuccessCallbacks.Add( new iberbar.System.TCallback( function( this: IRequest, response )
-        //     {
-        //         let logText = method.$HttpLogFormatSuccess( this, response );
-        //         if ( response.code < 0 )
-        //             console.warn( logText );
-        //         else
-        //             console.info( logText );
-        //     }, this ));
-        //     request.FailureCallbacks.Add( new iberbar.System.TCallback( function( this: IRequest, errCode, errText )
-        //     {
-        //         console.error( method.$HttpLogFormatFailure( this, errCode, errText ) );
-        //     }, this ) );
-        // }
+        if ( method.$Log )
+        {
+            this.m_request.SuccessCallbacks.Add( new iberbar.System.TCallback( function( this: CController, response )
+            {
+                let logText = method.$FormatSuccess( this.m_request.channel, this.m_request.url, response );
+                if ( response.code < 0 )
+                    console.warn( logText );
+                else
+                    console.info( logText );
+            }, this ));
+            // this.m_request.FailureCallbacks.Add( new iberbar.System.TCallback( function( this: IRequest, errCode, errText )
+            // {
+            //     console.error( method.$FormatFailure( this, errCode, errText ) );
+            // }, this ) );
+        }
         method.apply( this, args );
     
         // 通用处理PostData数据
@@ -232,18 +235,18 @@ export function Log(
     formatSuccess?: UFormatSuccess,
     formatFailure?: UFormatFailure )
 {
-    function __DefaultSuccess( channel:string, path: string, response: modRequestBase.URequestResponse ): string
+    function __DefaultSuccess( channel:string, url: string, response: modRequestBase.URequestResponse ): string
     {
         if ( response.code < 0 )
-            console.warn( "Controller.Execute Success:\nchannel=%s, path=%s,\nresponse=%O", channel, path, response );
+            console.warn( "Controller.Execute Success:\nchannel=%s, url=%s,\nresponse=%O", channel, url, response );
         else
-            console.info( "Controller.Execute Success:\nchannel=%s, path=%s,\nresponse=%O", channel, path, response );
+            console.info( "Controller.Execute Success:\nchannel=%s, url=%s,\nresponse=%O", channel, url, response );
         return ;
     }
 
-    function __DefaultFailure( channel:string, path: string, errCode: number, errText: string )
+    function __DefaultFailure( channel:string, url: string, errCode: number, errText: string )
     {
-        return console.error( "Controller.Execute Failure:\nchannel=%s, path=%s,\nerrCode=%d,\nerrText=%s", channel, path, errCode, errText );
+        return console.error( "Controller.Execute Failure:\nchannel=%s, url=%s,\nerrCode=%d,\nerrText=%s", channel, url, errCode, errText );
     }
 
     return function (target, method: string, descriptor: PropertyDescriptor)

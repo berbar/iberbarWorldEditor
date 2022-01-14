@@ -9,17 +9,23 @@ import { CRequest } from "libs/communication/request_jquery";
 import { IRequest } from "libs/communication/request";
 
 
+export enum UMode
+{
+    Local = 1,
+    Remote = 2,
+};
 
-function GetPaths( mode?: "local" | "remote" ): any[]
+
+function GetPaths( mode?: UMode ): any[]
 {
     let paths: any[] = [];
-    if ( mode == null || mode == "local" )
+    if ( mode == null || mode == UMode.Local )
     {
         paths = paths.concat([
             modIpcUsertype
         ]);
     }
-    if ( mode == null || mode == "remote" )
+    if ( mode == null || mode == UMode.Remote )
     {
         paths = paths.concat([
             modXhrUsertype
@@ -29,7 +35,7 @@ function GetPaths( mode?: "local" | "remote" ): any[]
 }
 
 
-function GetAssemblies( mode?: "local" | "remote" ): iberbar.System.Reflection.CAssembly[]
+function GetAssemblies( mode?: UMode ): iberbar.System.Reflection.CAssembly[]
 {
     let paths = GetPaths( mode );
     let assemblies: iberbar.System.Reflection.CAssembly[] = [];
@@ -81,7 +87,7 @@ export class CControllerManager
         return this.m_ioc.Resolve( this.m_Controller_Usertype );
     }
 
-    public SwitchMode( mode: "local" | "remote" ): void
+    public SwitchMode( mode: UMode ): void
     {
         let assemblies = GetAssemblies( mode );
         let typeInfo = this.GetType();
@@ -121,7 +127,7 @@ export class CControllerManager
  * @param cb 
  * @param mode local本地模式，remote远程模式
  */
-export function RegisterAll( cb: iberbar.Autofac.CContainerBuilder, initMode: "local" | "remote" ): void
+export function RegisterAll( cb: iberbar.Autofac.CContainerBuilder, initMode: UMode ): void
 {
     let assemblies = GetAssemblies();
     RegisterControllerTypes( cb, assemblies );

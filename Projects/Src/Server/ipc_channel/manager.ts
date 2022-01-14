@@ -1,6 +1,7 @@
 
 
 import { ipcMain, IpcMainEvent } from "electron";
+import { UIpcRequest } from "../common/ipc_request";
 import iberbar from "../libs/iberbar";
 import { CIpcChannelEventAttribute, CIpcChannelAttribute } from "./attributes";
 
@@ -70,7 +71,7 @@ export class CIpcChannelManager
                 continue;
             if ( channelNode.instance == null )
             {
-                channelNode.instance = this.m_ioc.Resolve( channelNode.type );
+                channelNode.instance = this.m_ioc.Resolve( channelNode.type, new iberbar.Autofac.CNamedParameter( "channel", <any>name ) );
             }
             this.ListenNode( channelNode );
         }
@@ -93,24 +94,24 @@ export class CIpcChannelManager
 
         if ( channelNode.persistent == true )
         {
-            ipcMain.on( channelNode.name, function( this: UChannelNode, event, ...args: any[] )
+            ipcMain.on( channelNode.name, function( this: UChannelNode, event, request: UIpcRequest, url: string, ...args: any[] )
             {
-                let handler = channelNode.events[ args[ 0 ] ];
+                let handler = channelNode.events[ url ];
                 if ( handler != null )
                 {
-                    handler.Invoke( channelNode.instance, ...args );
+                    handler.Invoke( channelNode.instance, event, request, url, ...args );
                 }
             } );
         }
         else
         {
-            ipcMain.once( channelNode.name, function( this: UChannelNode, event, ...args: any[] )
+            ipcMain.once( channelNode.name, function( this: UChannelNode, event, request: UIpcRequest, url: string, ...args: any[] )
             {
                 channelNode.listening = false;
-                let handler = channelNode.events[ args[ 0 ] ];
+                let handler = channelNode.events[ url ];
                 if ( handler != null )
                 {
-                    handler.Invoke( channelNode.instance, ...args );
+                    handler.Invoke( channelNode.instance, event, request, url, ...args );
                 }
             } );
         }

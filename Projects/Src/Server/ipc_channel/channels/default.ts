@@ -1,18 +1,17 @@
 
+import * as Electron from "electron";
+import { UIpcRequest } from "../../common/ipc_request";
 import { IpcChannel, IpcChannelEvent } from "../attributes";
+import { CBaseChannel } from "./__base";
 
 @IpcChannel( "default" )
-export class CDefaultIpcChannel
+export class CDefaultIpcChannel extends CBaseChannel
 {
-    @IpcChannelEvent( "save_type" )
-    protected OnEventSaveType(): void
+
+    @IpcChannelEvent( "GetUsertypes" )
+    protected __GetUsertypes( ipcEvent: Electron.IpcMainEvent, request: UIpcRequest, url: string, ...args: any[] ): void
     {
-
-    }
-
-    @IpcChannelEvent( "read_type" )
-    protected OnEventReadType(): void
-    {
-
+        console.log( request );
+        this.SendResponseSuccess( ipcEvent, request, "ssss" );
     }
 }
